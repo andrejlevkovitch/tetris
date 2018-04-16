@@ -1,0 +1,6 @@
+CMakeCache.txt
+cmake_uninstall.cmake
+cmake_install.cmake
+tetris
+CMakeFiles/
+*.so

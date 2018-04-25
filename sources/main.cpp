@@ -14,7 +14,9 @@ int main(int argc, char *argv[])
     }
 
     Tetris game{};
-    game.game();
+    for (int i{}; i < 2; ++i) {
+        game.game();
+    }
 
     endwin();
 

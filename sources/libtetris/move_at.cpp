@@ -15,3 +15,9 @@ void move_add(const Koords &in, chtype symbol)
     addch(symbol);
     return;
 }
+
+Direction &operator++(Direction &dir, int)
+{
+    auto a{static_cast<int>(dir)};
+    return dir = (++a > 3) ? RIGHT : static_cast<Direction>(a);
+}

@@ -3,11 +3,7 @@
 #include"../../include/tetrishead.hpp"
 #include<cstdbool>
 
-Koords::Koords(const unsigned y, const unsigned x) : y_(y), x_(x)
-{
-}
-
-Koords::Koords(const Koords &in, const int y, const int x) : y_(in.y_ + y), x_(in.x_ + x)
+Koords::Koords(const Koords &in) : y_(in.y_), x_(in.x_)
 {
 }
 
@@ -73,7 +69,20 @@ Koords Koords::operator-(const Koords &right) const
     return Koords{y_ - right.y_, x_ - right.x_};
 }
 
+Koords Koords::operator+(const Koords &right) const
+{
+    return Koords{y_ + right.y_, x_ + right.x_};
+}
+
 Koords &Koords::operator=(const Brick &in)
 {
     return *this = in.get_koords();
+}
+
+bool Koords::operator==(const Koords &right) const
+{
+    if (y_ == right.y_ && x_ == right.x_)
+        return true;
+    else
+        return false;
 }

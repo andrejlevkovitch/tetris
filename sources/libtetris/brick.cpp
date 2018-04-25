@@ -6,225 +6,232 @@
 #include<random>
 #include<chrono>
 #include<tuple>
+#include<cstdbool>
 
-Brick::Brick(const BrickType &figure) : direction_(RIGHT), position_(INPOSITION)
+Brick::Brick() : direction_(RIGHT), position_(SHOWPOSITION), center_(DEFCENTER)
 {
-    std::default_random_engine generator(std::chrono::system_clock::now().time_since_epoch().count());
-    std::uniform_int_distribution<int> distribution(0, 3);
-    direction_ = static_cast<Direction>(distribution(generator));
+    BrickType figure{};
+    {
+        std::default_random_engine generator(std::chrono::system_clock::now().time_since_epoch().count());
+        std::uniform_int_distribution<int> distribution(0, NBrTy - 1);
+        figure = static_cast<BrickType>(distribution(generator));
+        name_ = figure;
+    }
+
+    {
+        std::default_random_engine generator(std::chrono::system_clock::now().time_since_epoch().count());
+        std::uniform_int_distribution<int> distribution(0, BLOCKS.size() - 1);
+        block_ = BLOCKS[distribution(generator)];
+    }
     switch(figure) {
         case BRICK_I:
             field_.resize(1, std::remove_reference_t<decltype(field_[0])> (4, DEF_VALUE));
             for (int i{}; i < field_[0].size(); ++i) {
-                field_[0][i] = BLOCK;
+                field_[0][i] = block_;
             }
             break;
         case BRICK_J:
             field_.resize(2, std::remove_reference_t<decltype(field_[0])> (3, DEF_VALUE));
-            field_[1][2] = BLOCK;
+            field_[1][2] = block_;
             for (int i{}; i < field_[0].size(); ++i) {
-                field_[0][i] = BLOCK;
+                field_[0][i] = block_;
             }
             break;
         case BRICK_L:
             field_.resize(2, std::remove_reference_t<decltype(field_[0])> (3, DEF_VALUE));
-            field_[1][0] = BLOCK;
+            field_[1][0] = block_;
             for (int i{}; i < field_[0].size(); ++i) {
-                field_[0][i] = BLOCK;
+                field_[0][i] = block_;
             }
             break;
         case BRICK_O:
-            field_.resize(2, std::remove_reference_t<decltype(field_[0])> (2, BLOCK));
+            field_.resize(2, std::remove_reference_t<decltype(field_[0])> (2, block_));
             break;
         case BRICK_S:
             field_.resize(2, std::remove_reference_t<decltype(field_[0])> (3, DEF_VALUE));
             for (int i{}; i < field_.size(); ++i) {
                 for (int j{1 - i}; j + i < field_[i].size(); ++j) {
-                    field_[i][j] = BLOCK;
+                    field_[i][j] = block_;
                 }
             }
             break;
         case BRICK_T:
             field_.resize(2, std::remove_reference_t<decltype(field_[0])> (3, DEF_VALUE));
-            field_[0][1] = BLOCK;
+            field_[0][1] = block_;
             for (int i{}; i < field_[1].size(); ++i) {
-                field_[1][i] = BLOCK;
+                field_[1][i] = block_;
             }
             break;
         case BRICK_Z:
             field_.resize(2, std::remove_reference_t<decltype(field_[0])> (3, DEF_VALUE));
             for (int i{}; i < field_.size(); ++i) {
                 for (int j{i}; j - i < field_[i].size() - 1; ++j) {
-                    field_[i][j] = BLOCK;
+                    field_[i][j] = block_;
                 }
             }
             break;
         default:
             break;
     }
+
+    {
+        std::default_random_engine generator(std::chrono::system_clock::now().time_since_epoch().count());
+        std::uniform_int_distribution<int> distribution(0, 3);
+        auto count_of_rotedes{(distribution(generator))};
+        for (int i{}; i < count_of_rotedes; ++i) {
+            rotor();
+        }
+    }
+    beg_direction_ = direction_;
+    show();
+    position_ = INPOSITION;
 }
 
 Brick::~Brick()
 {
+    while (direction_ != beg_direction_) {
+        rotor();
+    }
+    position_ = SHOWPOSITION;
+    show(' ');
 }
 
-const Brick &Brick::show(const chtype block) const
+const Brick &Brick::show(chtype block) const
 {
-    Koords stat{position_};
-    Koords temp{position_};
-    switch (direction_) {
-        case RIGHT:
-            stat.move_left();
-            for (auto i : field_) {
-                temp = stat;
-                for (auto j : i) {
-                    if (j != DEF_VALUE && temp > BEGSCR) {
-                        move_at(temp);
-                        addch(block);
-                        addch(block);
-                    }
-                    temp.move_right();
-                }
-                stat.move_down();
-            }
-            break;
-        case LEFT:
-            stat.move_right();
-            for (auto i : field_) {
-                temp = stat;
-                for (auto j : i) {
-                    if (j != DEF_VALUE && temp > BEGSCR) {
-                        move_at(temp);
-                        addch(block);
-                        addch(block);
-                    }
-                    temp.move_left();
-                }
-                stat.move_up();
-            }
-            break;
-        case UP:
-            stat.move_down();
-            for (auto i : field_) {
-                temp = stat;
-                for (auto j : i) {
-                    if (j != DEF_VALUE && temp > BEGSCR) {
-                        move_at(temp);
-                        addch(block);
-                        addch(block);
-                    }
-                    temp.move_up();
-                }
-                stat.move_right();
-            }
-            break;
-        case DOWN:
-            stat.move_up();
-            for (auto i : field_) {
-                temp = stat;
-                for (auto j : i) {
-                    if (j != DEF_VALUE && temp > BEGSCR) {
-                        move_at(temp);
-                        addch(block);
-                        addch(block);
-                    }
-                    temp.move_down();
-                }
-                stat.move_left();
-            }
-            break;
-        default:
-            break;
+    Koords stat{sides().first};
+    Koords temp{stat};
+    if (block == BLOCKS[0]) {
+        block = block_;
     }
-
+    for (auto i : field_) {
+        temp = stat;
+        for (auto j : i) {
+            if (j != DEF_VALUE && temp > BEGSCR) {
+                move_at(temp);
+                addch(block);
+                addch(block);
+            }
+            temp.move_right();
+        }
+        stat.move_down();
+    }
     return *this;
 }
 
-Brick &Brick::rotade()
+bool Brick::is_pasible(Field &out) const
 {
-    if (field_[0].size() == 2) {
+    auto temp{sides().first};
+    temp.to_index();
+    for (int i{}, l = temp.getY(); i < field_.size(); ++i, ++l) {
+        for (int j{}, m = temp.getX(); j < field_[i].size(); ++j, ++m) {
+            if (field_[i][j] != DEF_VALUE && out[l][m] != DEF_VALUE) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+Brick &Brick::rotade(Field &out)
+{
+    if (name_ == BRICK_O) {
         return *this;
     }
     clean();
-    auto a{direction_ + 1};
-    direction_ = (a > 3) ? RIGHT : static_cast<Direction>(a);
-    while (!(sides().first > BEGSCR)) {
-        position_.move_right();
-    }
-    Koords temp{ENDSCR, 2, 0};
-    while (!(sides().second < temp)) {
-        position_.move_left();
-    }
-    while (!(sides().second < ENDSCR)) {
-        position_.move_up();
+    {
+        auto spare{position_};
+        rotor();
+        int counter{};
+        bool need_cikle = false;
+        do {
+            refresh();
+            while (!(sides().first > BEGSCR)) {
+                position_.move_right();
+            }
+            while (!(sides().second < Koords{ENDSCR + Koords{2, 0}})) {
+                position_.move_left();
+            }
+            while (!(sides().second < ENDSCR)) {
+                position_.move_up();
+            }
+            if (!is_pasible(out)) {
+                position_ = spare;
+                need_cikle = true;
+                counter++;
+                switch (counter) {
+                    case 0:
+                        position_.move_left();
+                        break;
+                    case 1:
+                        position_.move_right();
+                        break;
+                    default:
+                        need_cikle = false;
+                        for (int i{}; i < 3; ++i) {
+                            rotor();
+                        }
+                        break;
+                }
+            }
+            else {
+                need_cikle = false;
+            }
+            refresh();
+        } while(need_cikle);
     }
     show();
     return *this;
 }
 
-bool Brick::down()
+bool Brick::down(Field &out)
 {
-    if (sides().second.move_down() < ENDSCR) {
-        clean();
-        position_.move_down();
-        show();
+    bool returnVal{false};
+    clean();
+    auto spare{position_};
+    position_.move_down();
+    if (sides().second < ENDSCR && is_pasible(out)) {
     }
     else {
-        return true;
+        position_ = spare;
+        returnVal = true;
     }
-    return false;
+    show();
+    return returnVal;
 }
 
-Brick &Brick::right()
+Brick &Brick::right(Field &out)
 {
-    if (sides().second.move_right() < ENDSCR) {
-        clean();
-        position_.move_right();
-        show();
+    clean();
+    auto spare{position_};
+    position_.move_right();
+    if (sides().second < ENDSCR && is_pasible(out)) {
     }
+    else {
+        position_ = spare;
+    }
+    show();
     return *this;
 }
 
-Brick &Brick::left()
+Brick &Brick::left(Field &out)
 {
-    if (sides().first.move_left() > BEGSCR) {
-        clean();
-        position_.move_left();
-        show();
+    clean();
+    auto spare{position_};
+    position_.move_left();
+    if (sides().first > BEGSCR && is_pasible(out)) {
     }
+    else {
+        position_ = spare;
+    }
+    show();
     return *this;
 }
 
 std::pair<Koords, Koords> Brick::sides() const
 {
-    int a{}, b{}, c{}, d{};
-    switch (direction_) {
-        case RIGHT:
-            a = - 2;
-            b = (field_[0].size() - 1) * 2 - 1;
-            c = 0;
-            d = field_.size() - 1;
-            break;
-        case LEFT:
-            a = - ((field_[0].size() - 2) * 2);
-            b = 3;
-            c = field_.size() - 1;
-            d = 0;
-            break;
-        case UP:
-            a = 0;
-            b = (field_.size()) * 2 - 1;
-            c = field_[0].size() - 2;
-            d = 1;
-            break;
-        case DOWN:
-            a = - (field_.size() - 1) * 2;
-            b = 1;
-            c = 1;
-            d = field_[0].size() - 2;
-            break;
-    }
-    return std::pair<Koords, Koords>(Koords{position_, c, a}, Koords{position_, d, b});
+    Koords a{position_ - Koords{center_ + Koords{0, center_.getX()}}};
+    Koords b{a + Koords{field_.size() - 1, field_[0].size() * 2 - 1}};
+    return std::pair<Koords, Koords>(a, b);
 }
 
 const Brick &Brick::clean() const
@@ -233,15 +240,32 @@ const Brick &Brick::clean() const
     return *this;
 }
 
-Brick &Brick::next()
-{
-    std::default_random_engine generator(std::chrono::system_clock::now().time_since_epoch().count());
-    std::uniform_int_distribution<int> distribution(0, NBrTy - 1);
-    *this = Brick{static_cast<BrickType>(distribution(generator))};
-    return *this;
-}
-
 const Koords &Brick::get_koords() const
 {
     return position_;
+}
+
+Brick &Brick::rotor()
+{
+    decltype(field_) temp(field_[0].size(), std::remove_reference_t<decltype(field_[0])> (field_.size(), DEF_VALUE));
+    bool no_uptade_center{true};
+    for (unsigned i{}; i < field_.size(); ++i) {
+        for (unsigned j{}; j < field_[i].size(); ++j) {
+            unsigned n = field_.size() - i - 1;
+            temp[j][n] = field_[i][j];
+            if (center_ == Koords{i, j} && no_uptade_center) {
+                center_ = Koords{j, n};
+                no_uptade_center = false;
+            }
+        }
+    }
+    direction_++;
+    field_ = temp;
+    refresh();
+    return *this;
+}
+
+Field Brick::get_block() const
+{
+    return field_;
 }

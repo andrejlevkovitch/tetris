@@ -3,8 +3,11 @@
 #include"../../include/tetrishead.hpp"
 #include<vector>
 #include<curses.h>
+#include<random>
+#include<chrono>
+#include<tuple>
 
-Brick::Brick(const BrickType figure) : direction_(RIGHT), position_(INPUTBRICKY, INPUTBRICKX)
+Brick::Brick(const BrickType &figure) : direction_(RIGHT), position_(BEGSCR, 1, SIZEX - 2 - 1)
 {
     switch(figure) {
         case BRICK_I:
@@ -15,16 +18,16 @@ Brick::Brick(const BrickType figure) : direction_(RIGHT), position_(INPUTBRICKY,
             break;
         case BRICK_J:
             field_.resize(2, std::remove_reference_t<decltype(field_[0])> (3, DEF_VALUE));
-            field_[0][0] = BLOCK;
-            for (int i{}; i < field_[1].size(); ++i) {
-                field_[1][i] = BLOCK;
+            field_[1][0] = BLOCK;
+            for (int i{}; i < field_[0].size(); ++i) {
+                field_[0][i] = BLOCK;
             }
             break;
         case BRICK_L:
             field_.resize(2, std::remove_reference_t<decltype(field_[0])> (3, DEF_VALUE));
-            field_[0][field_[0].size() - 1] = BLOCK;
-            for (int i{}; i < field_[1].size(); ++i) {
-                field_[1][i] = BLOCK;
+            *field_[1].end() = BLOCK;
+            for (int i{}; i < field_[0].size(); ++i) {
+                field_[0][i] = BLOCK;
             }
             break;
         case BRICK_O:
@@ -62,32 +65,172 @@ Brick::~Brick()
 {
 }
 
-void Brick::show() const
+const Brick &Brick::show(const chtype block) const
 {
-    int y{position_.getY()}, x{position_.getX()};
-    int a{}, b{};
-    for (int i{}; i < field_.size(); ++i) {
-        move(y++, x);
-        refresh();
-        for (int j{}; j < field_[i].size(); ++j) {
-            if (field_[i][j] != DEF_VALUE) {
-                addch(field_[i][j]);
-                addch(field_[i][j]);
+    Koords stat{position_};
+    Koords temp{position_};
+    switch (direction_) {
+        case RIGHT:
+            stat.move_left();
+            for (auto i : field_) {
+                temp = stat;
+                for (auto j : i) {
+                    if (j != DEF_VALUE && temp > BEGSCR) {
+                        move_at(temp);
+                        addch(block);
+                        addch(block);
+                    }
+                    temp.move_right();
+                }
+                stat.move_down();
             }
-            else {
-                getyx(curscr, a, b);
-                move(a, b + 2);
+            break;
+        case LEFT:
+            stat.move_right();
+            for (auto i : field_) {
+                temp = stat;
+                for (auto j : i) {
+                    if (j != DEF_VALUE && temp > BEGSCR) {
+                        move_at(temp);
+                        addch(block);
+                        addch(block);
+                    }
+                    temp.move_left();
+                }
+                stat.move_up();
             }
-            refresh();
-        }
+            break;
+        case UP:
+            stat.move_down();
+            for (auto i : field_) {
+                temp = stat;
+                for (auto j : i) {
+                    if (j != DEF_VALUE && temp > BEGSCR) {
+                        move_at(temp);
+                        addch(block);
+                        addch(block);
+                    }
+                    temp.move_up();
+                }
+                stat.move_right();
+            }
+            break;
+        case DOWN:
+            stat.move_up();
+            for (auto i : field_) {
+                temp = stat;
+                for (auto j : i) {
+                    if (j != DEF_VALUE && temp > BEGSCR) {
+                        move_at(temp);
+                        addch(block);
+                        addch(block);
+                    }
+                    temp.move_down();
+                }
+                stat.move_left();
+            }
+            break;
+        default:
+            break;
     }
 
-    return;
+    return *this;
 }
 
-void Brick::rotade()
+Brick &Brick::rotade()
 {
-    auto a{static_cast<int>(direction_) + 1};
+    if (field_[0].size() == 2) {
+        return *this;
+    }
+    clean();
+    auto a{direction_ + 1};
     direction_ = (a > 3) ? RIGHT : static_cast<Direction>(a);
-    return;
+    while (!(sides().first > BEGSCR)) {
+        position_.move_right();
+    }
+    Koords temp{ENDSCR, 2, 0};
+    while (!(sides().second < temp)) {
+        position_.move_left();
+    }
+    while (!(sides().second < ENDSCR)) {
+        position_.move_up();
+    }
+    show();
+    return *this;
+}
+
+Brick &Brick::down()
+{
+    clean();
+    if (sides().second.move_down() < ENDSCR) {
+        position_.move_down();
+    }
+    show();
+    return *this;
+}
+
+Brick &Brick::right()
+{
+    clean();
+    if (sides().second.move_right() < ENDSCR) {
+        position_.move_right();
+    }
+    show();
+    return *this;
+}
+
+Brick &Brick::left()
+{
+    clean();
+    if (sides().first.move_left() > BEGSCR) {
+        position_.move_left();
+    }
+    show();
+    return *this;
+}
+
+std::pair<Koords, Koords> Brick::sides() const
+{
+    int a{}, b{}, c{}, d{};
+    switch (direction_) {
+        case RIGHT:
+            a = - 2;
+            b = (field_[0].size() - 1) * 2 - 1;
+            c = 0;
+            d = field_.size() - 1;
+            break;
+        case LEFT:
+            a = - ((field_[0].size() - 2) * 2);
+            b = 3;
+            c = field_.size() - 1;
+            d = 0;
+            break;
+        case UP:
+            a = 0;
+            b = (field_.size()) * 2 - 1;
+            c = field_[0].size() - 2;
+            d = 1;
+            break;
+        case DOWN:
+            a = - (field_.size() - 1) * 2;
+            b = 1;
+            c = 1;
+            d = field_[0].size() - 2;
+            break;
+    }
+    return std::pair<Koords, Koords>(Koords{position_, c, a}, Koords{position_, d, b});
+}
+
+const Brick &Brick::clean() const
+{
+    show(DEF_VALUE);
+    return *this;
+}
+
+Brick &Brick::next()
+{
+    std::default_random_engine generator(std::chrono::system_clock::now().time_since_epoch().count());
+    std::uniform_int_distribution<int> distribution(0, NBrTy - 1);
+    *this = Brick{static_cast<BrickType>(distribution(generator))};
+    return *this;
 }

@@ -3,15 +3,11 @@
 #include<vector>
 #include<string>
 #include<curses.h>
+#include<cstdbool>
+#include<tuple>
 
 const unsigned SIZEY{20};
 const unsigned SIZEX{10};
-
-const unsigned BYSCREEN{5};
-const unsigned BXSCREEN{9};
-
-const unsigned INPUTBRICKY{BYSCREEN + 1};
-const unsigned INPUTBRICKX{BXSCREEN + SIZEX - 2};
 
 const int ESC{033};
 const int ENTER{012};
@@ -22,19 +18,32 @@ enum Cell{DEFAULT_CELL, FRAME_CELL, FREE_CELL, BRICK_CELL};
 const chtype DEF_VALUE{' ' | COLOR_PAIR(FREE_CELL)};
 const chtype BLOCK{' ' | COLOR_PAIR(BRICK_CELL)};
 
+const unsigned NBrTy{7};
 enum BrickType{BRICK_I, BRICK_J, BRICK_L, BRICK_O, BRICK_S, BRICK_T, BRICK_Z};
 
-enum Direction{RIGHT, DOUWN, LEFT, UP};
+enum Direction{RIGHT, DOWN, LEFT, UP};
 
 class Koords {
     private:
-        unsigned short y_;
-        unsigned short x_;
+        unsigned y_;
+        unsigned x_;
+        static const unsigned PASSIDE{2};
+        static const unsigned PASFRWD{1};
     public:
-        Koords(const int y = 0, const int x = 0);
+        explicit Koords(const unsigned y = 0, const unsigned x = 0);
+        Koords(const Koords &, const int y = 0, const int x = 0);
         auto getY() const -> decltype(y_);
         auto getX() const -> decltype(x_);
+        bool operator<(const Koords &) const;
+        bool operator>(const Koords &) const;
+        Koords &move_right();
+        Koords &move_left();
+        Koords &move_up();
+        Koords &move_down();
 };
+
+const Koords BEGSCR{5, 9};
+const Koords ENDSCR{BEGSCR, SIZEY + 1, SIZEX * 2 + 1};
 
 class Brick {
     private:
@@ -42,18 +51,22 @@ class Brick {
         Direction direction_;
         Koords position_;
     public:
-        explicit Brick(const BrickType = BRICK_I);
+        explicit Brick(const BrickType & = BRICK_I);
         ~Brick();
-        void show() const;
-        void rotade();
+        const Brick &show(const chtype = BLOCK) const;
+        Brick &rotade();
+        Brick &down();
+        Brick &left();
+        Brick &right();
+        Brick &next();
+    private:
+        const Brick &clean() const;
+        std::pair<Koords, Koords> sides() const;
 };
 
 class Tetris {
     private:
-        std::vector<std::vector<chtype>> field_;
-        decltype(field_) screen_;
-        Koords beginen_;
-        Koords end_;
+        std::vector<std::vector<chtype>> screen_;
     public:
         Tetris();
         ~Tetris();
@@ -64,4 +77,5 @@ class Tetris {
 };
 
 void move_at(const Koords &);
+void move_add(const Koords &, chtype);
 int init_colors(void);

@@ -111,17 +111,6 @@ install/local/fast: install/local
 
 .PHONY : install/local/fast
 
-# Special rule for the target install/strip
-install/strip: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
-	/usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip
-
-# Special rule for the target install/strip
-install/strip/fast: install/strip
-
-.PHONY : install/strip/fast
-
 # The main all target
 all: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/andrej/Public/git/tetris/build/CMakeFiles /home/andrej/Public/git/tetris/build/CMakeFiles/progress.marks
@@ -179,6 +168,11 @@ tetris: cmake_check_build_system
 tetris/fast:
 	$(MAKE) -f CMakeFiles/tetris.dir/build.make CMakeFiles/tetris.dir/build
 .PHONY : tetris/fast
+
+# Manual pre-install relink rule for target.
+tetris/preinstall:
+	$(MAKE) -f CMakeFiles/tetris.dir/build.make CMakeFiles/tetris.dir/preinstall
+.PHONY : tetris/preinstall
 
 #=============================================================================
 # Target rules for targets named uninstall
@@ -367,9 +361,8 @@ help:
 	@echo "... list_install_components"
 	@echo "... tet"
 	@echo "... tetris"
-	@echo "... install/local"
-	@echo "... install/strip"
 	@echo "... uninstall"
+	@echo "... install/local"
 	@echo "... sources/libtetris/brick.o"
 	@echo "... sources/libtetris/brick.i"
 	@echo "... sources/libtetris/brick.s"

@@ -3,18 +3,13 @@
 #include"../../include/tetrishead.hpp"
 #include<curses.h>
 #include<vector>
+#include<cstdlib>
+#include<ctime>
+#include<iostream>
 
-Tetris::Tetris() : beginen_(BYSCREEN, BXSCREEN)
+Tetris::Tetris()
 {
     screen_.resize(SIZEY, std::remove_reference_t<decltype(screen_[0])> (SIZEX, DEF_VALUE));
-    field_ = screen_;
-
-    {
-        int ey{}, ex{};
-        ey = beginen_.getY() + screen_.size() + 1;
-        ex = beginen_.getX() + screen_[0].size() + screen_[0].size() + 1;
-        end_ = Koords{ey, ex};
-    }
 }
 
 Tetris::~Tetris()
@@ -23,21 +18,21 @@ Tetris::~Tetris()
 
 void Tetris::frame() const
 {
-    int y{beginen_.getY()}, x{beginen_.getX()};
+    Koords temp{BEGSCR};
     attron(COLOR_PAIR(FRAME_CELL));
-    mvaddch(y, x, ACS_ULCORNER);
-    for (int i{}; i < screen_[0].size(); ++i) {
+    move_add(temp, ACS_ULCORNER);
+    for (auto i : screen_[0]) {
         addch(ACS_HLINE);
         addch(ACS_HLINE);
     }
     addch(ACS_URCORNER);
-    y++;
-    for (int i{}; i < screen_.size(); ++i, y = ++y) {
-        mvaddch(y, x, ACS_VLINE);
-        mvaddch(y, end_.getX(), ACS_VLINE);
+    Koords other_side{temp, 0, SIZEX * 2 + 1};
+    for (auto i : screen_) {
+        move_add(temp.move_down(), ACS_VLINE);
+        move_add(other_side.move_down(), ACS_VLINE);
     }
-    mvaddch(y, x, ACS_LLCORNER);
-    for (int i{}; i < screen_[0].size(); ++i) {
+    move_add(temp.move_down(), ACS_LLCORNER);
+    for (auto i : screen_[0]) {
         addch(ACS_HLINE);
         addch(ACS_HLINE);
     }
@@ -50,11 +45,12 @@ void Tetris::frame() const
 
 void Tetris::print_screen() const
 {
-    for (int i{}; i < screen_.size(); ++i) {
-        move(beginen_.getY() + i + 1, beginen_.getX() + 1);
-        for (int j{}; j < screen_[i].size(); ++j) {
-            addch(screen_[i][j]);
-            addch(screen_[i][j]);
+    Koords temp{BEGSCR, 0, 1};
+    for (auto i : screen_) {
+        move_at(temp.move_down());
+        for (auto j : i) {
+            addch(j);
+            addch(j);
         }
     }
     refresh();
@@ -64,5 +60,32 @@ void Tetris::print_screen() const
 void Tetris::game()
 {
     frame();
+    std::cout << "ark\n";
+
+    int ch{};
+
+    Brick br;
+    br.next();
+    br.show();
+    std::cout << "mak\n";
+    while ((ch = getch()) != ESC) {
+        switch (ch) {
+            case KEY_UP:
+                br.rotade();
+                break;
+            case KEY_DOWN:
+                br.down();
+                break;
+            case KEY_LEFT:
+                br.left();
+                break;
+            case KEY_RIGHT:
+                br.right();
+                break;
+            default:
+                break;
+        }
+    }
+
     return;
 }

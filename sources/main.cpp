@@ -8,25 +8,15 @@
 int main(int argc, char *argv[])
 {
     initscr();
+    keypad(stdscr, TRUE);
+    noecho();
 
     if (!init_colors()) {
         return 1;
     }
 
-//  Tetris game{};
-//  game.game();
-//  Brick b{BRICK_T};
-//  b.show();
-
-    for (int i{}; i < 7; ++i) {
-        Brick b{static_cast<BrickType>(i)};
-        b.show();
-        refresh();
-        sleep(1);
-        clear();
-    }
-    noecho();
-    getch();
+    Tetris game{};
+    game.game();
 
     endwin();
 

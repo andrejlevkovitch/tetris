@@ -1,7 +1,6 @@
 //tetrishead.hpp
 
 #include<vector>
-#include<string>
 #include<curses.h>
 #include<cstdbool>
 #include<tuple>
@@ -23,6 +22,7 @@ enum BrickType{BRICK_I, BRICK_J, BRICK_L, BRICK_O, BRICK_S, BRICK_T, BRICK_Z};
 
 enum Direction{RIGHT, DOWN, LEFT, UP};
 
+class Brick;
 class Koords {
     private:
         unsigned y_;
@@ -36,14 +36,18 @@ class Koords {
         auto getX() const -> decltype(x_);
         bool operator<(const Koords &) const;
         bool operator>(const Koords &) const;
+        Koords &operator=(const Brick &);
+        Koords operator-(const Koords &) const;
         Koords &move_right();
         Koords &move_left();
         Koords &move_up();
         Koords &move_down();
+        Koords &to_index();
 };
 
 const Koords BEGSCR{5, 9};
 const Koords ENDSCR{BEGSCR, SIZEY + 1, SIZEX * 2 + 1};
+const Koords INPOSITION{BEGSCR, 0, SIZEX + 1};
 
 class Brick {
     private:
@@ -55,10 +59,11 @@ class Brick {
         ~Brick();
         const Brick &show(const chtype = BLOCK) const;
         Brick &rotade();
-        Brick &down();
+        bool down();
         Brick &left();
         Brick &right();
         Brick &next();
+        const Koords &get_koords() const;
     private:
         const Brick &clean() const;
         std::pair<Koords, Koords> sides() const;
@@ -74,6 +79,7 @@ class Tetris {
     private:
         void frame() const;
         void print_screen() const;
+        void intake(const Brick &);
 };
 
 void move_at(const Koords &);

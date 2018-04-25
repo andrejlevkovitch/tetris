@@ -60,3 +60,20 @@ Koords &Koords::move_down()
     y_ += PASFRWD;
     return *this;
 }
+
+Koords &Koords::to_index()
+{
+    *this = *this - BEGSCR - Koords{1, 1};
+    *this = Koords{y_, x_ / 2};
+    return *this;
+}
+
+Koords Koords::operator-(const Koords &right) const
+{
+    return Koords{y_ - right.y_, x_ - right.x_};
+}
+
+Koords &Koords::operator=(const Brick &in)
+{
+    return *this = in.get_koords();
+}

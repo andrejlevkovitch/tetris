@@ -7,8 +7,11 @@
 #include<chrono>
 #include<tuple>
 
-Brick::Brick(const BrickType &figure) : direction_(RIGHT), position_(BEGSCR, 1, SIZEX - 2 - 1)
+Brick::Brick(const BrickType &figure) : direction_(RIGHT), position_(INPOSITION)
 {
+    std::default_random_engine generator(std::chrono::system_clock::now().time_since_epoch().count());
+    std::uniform_int_distribution<int> distribution(0, 3);
+    direction_ = static_cast<Direction>(distribution(generator));
     switch(figure) {
         case BRICK_I:
             field_.resize(1, std::remove_reference_t<decltype(field_[0])> (4, DEF_VALUE));
@@ -18,14 +21,14 @@ Brick::Brick(const BrickType &figure) : direction_(RIGHT), position_(BEGSCR, 1, 
             break;
         case BRICK_J:
             field_.resize(2, std::remove_reference_t<decltype(field_[0])> (3, DEF_VALUE));
-            field_[1][0] = BLOCK;
+            field_[1][2] = BLOCK;
             for (int i{}; i < field_[0].size(); ++i) {
                 field_[0][i] = BLOCK;
             }
             break;
         case BRICK_L:
             field_.resize(2, std::remove_reference_t<decltype(field_[0])> (3, DEF_VALUE));
-            *field_[1].end() = BLOCK;
+            field_[1][0] = BLOCK;
             for (int i{}; i < field_[0].size(); ++i) {
                 field_[0][i] = BLOCK;
             }
@@ -159,33 +162,36 @@ Brick &Brick::rotade()
     return *this;
 }
 
-Brick &Brick::down()
+bool Brick::down()
 {
-    clean();
     if (sides().second.move_down() < ENDSCR) {
+        clean();
         position_.move_down();
+        show();
     }
-    show();
-    return *this;
+    else {
+        return true;
+    }
+    return false;
 }
 
 Brick &Brick::right()
 {
-    clean();
     if (sides().second.move_right() < ENDSCR) {
+        clean();
         position_.move_right();
+        show();
     }
-    show();
     return *this;
 }
 
 Brick &Brick::left()
 {
-    clean();
     if (sides().first.move_left() > BEGSCR) {
+        clean();
         position_.move_left();
+        show();
     }
-    show();
     return *this;
 }
 
@@ -233,4 +239,9 @@ Brick &Brick::next()
     std::uniform_int_distribution<int> distribution(0, NBrTy - 1);
     *this = Brick{static_cast<BrickType>(distribution(generator))};
     return *this;
+}
+
+const Koords &Brick::get_koords() const
+{
+    return position_;
 }

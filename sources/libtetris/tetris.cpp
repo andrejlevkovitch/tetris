@@ -3,9 +3,7 @@
 #include"../../include/tetrishead.hpp"
 #include<curses.h>
 #include<vector>
-#include<cstdlib>
-#include<ctime>
-#include<iostream>
+#include<cstdbool>
 
 Tetris::Tetris()
 {
@@ -60,32 +58,49 @@ void Tetris::print_screen() const
 void Tetris::game()
 {
     frame();
-    std::cout << "ark\n";
 
     int ch{};
-
     Brick br;
-    br.next();
-    br.show();
-    std::cout << "mak\n";
-    while ((ch = getch()) != ESC) {
-        switch (ch) {
-            case KEY_UP:
-                br.rotade();
-                break;
-            case KEY_DOWN:
-                br.down();
-                break;
-            case KEY_LEFT:
-                br.left();
-                break;
-            case KEY_RIGHT:
-                br.right();
-                break;
-            default:
-                break;
-        }
-    }
 
+    do {
+        br.next();
+        br.show();
+        bool needNewBrick{};
+        while ((ch = getch()) != ESC && !needNewBrick) {
+            switch (ch) {
+                case KEY_UP:
+                    br.rotade();
+                    break;
+                case KEY_DOWN:
+                    needNewBrick = br.down();
+                    break;
+                case KEY_LEFT:
+                    br.left();
+                    break;
+                case KEY_RIGHT:
+                    br.right();
+                    break;
+                default:
+                    break;
+            }
+            Koords a;
+            a = br;
+            a.to_index();
+            mvprintw(0, 0, "%2i\n%2i", a.getY(), a.getX());
+
+            if (needNewBrick) {
+                intake(br);
+            }
+        }
+    } while (ch != ESC);
+
+    return;
+}
+
+void Tetris::intake(const Brick &in)
+{
+    Koords temp;
+    temp = in;
+    temp.to_index();
     return;
 }

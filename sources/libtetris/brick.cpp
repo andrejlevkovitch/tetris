@@ -3,25 +3,22 @@
 #include"../../include/tetrishead.hpp"
 #include<vector>
 #include<curses.h>
-#include<random>
-#include<chrono>
 #include<tuple>
 #include<cstdbool>
+#include<cstdlib>
+#include<ctime>
 
-Brick::Brick() : direction_(RIGHT), position_(SHOWPOSITION), center_(DEFCENTER)
+Brick::Brick() : direction_{RIGHT}, position_{SHOW_POSITION}, center_{DEF_CENTRUM}
 {
     BrickType figure{};
     {
-        std::default_random_engine generator(std::chrono::system_clock::now().time_since_epoch().count());
-        std::uniform_int_distribution<int> distribution(0, NBrTy - 1);
-        figure = static_cast<BrickType>(distribution(generator));
+        srand(time(NULL));
+        figure = static_cast<BrickType>(rand() % N_BRICK_KIND);
         name_ = figure;
     }
 
     {
-        std::default_random_engine generator(std::chrono::system_clock::now().time_since_epoch().count());
-        std::uniform_int_distribution<int> distribution(0, BLOCKS.size() - 1);
-        block_ = BLOCKS[distribution(generator)];
+        block_ = BLOCKS[rand() % BLOCKS.size()];
     }
     switch(figure) {
         case BRICK_I:
@@ -75,16 +72,14 @@ Brick::Brick() : direction_(RIGHT), position_(SHOWPOSITION), center_(DEFCENTER)
     }
 
     {
-        std::default_random_engine generator(std::chrono::system_clock::now().time_since_epoch().count());
-        std::uniform_int_distribution<int> distribution(0, 3);
-        auto count_of_rotedes{(distribution(generator))};
+        auto count_of_rotedes{rand() % 4};
         for (int i{}; i < count_of_rotedes; ++i) {
             rotor();
         }
     }
     beg_direction_ = direction_;
     show();
-    position_ = INPOSITION;
+    position_ = IN_POSITION;
 }
 
 Brick::~Brick()
@@ -92,7 +87,7 @@ Brick::~Brick()
     while (direction_ != beg_direction_) {
         rotor();
     }
-    position_ = SHOWPOSITION;
+    position_ = SHOW_POSITION;
     show(' ');
 }
 
@@ -106,7 +101,7 @@ const Brick &Brick::show(chtype block) const
     for (auto i : field_) {
         temp = stat;
         for (auto j : i) {
-            if (j != DEF_VALUE && temp > BEGSCR) {
+            if (j != DEF_VALUE && temp > BEG_SCR) {
                 move_at(temp);
                 addch(block);
                 addch(block);
@@ -115,6 +110,8 @@ const Brick &Brick::show(chtype block) const
         }
         stat.move_down();
     }
+    move_at(SHOW_POSITION);
+    refresh();
     return *this;
 }
 
@@ -124,7 +121,7 @@ bool Brick::is_pasible(Field &out) const
     temp.to_index();
     for (int i{}, l = temp.getY(); i < field_.size(); ++i, ++l) {
         for (int j{}, m = temp.getX(); j < field_[i].size(); ++j, ++m) {
-            if (field_[i][j] != DEF_VALUE && out[l][m] != DEF_VALUE) {
+            if (l >= 0 && m >= 0 && field_[i][j] != DEF_VALUE && out[l][m] != DEF_VALUE) {
                 return false;
             }
         }
@@ -137,21 +134,20 @@ Brick &Brick::rotade(Field &out)
     if (name_ == BRICK_O) {
         return *this;
     }
-    clean();
+    show(DEF_VALUE);
     {
         auto spare{position_};
         rotor();
         int counter{};
         bool need_cikle = false;
         do {
-            refresh();
-            while (!(sides().first > BEGSCR)) {
+            while (!(sides().first > Koords{BEG_SCR - BUFFER_PLACE})) {
                 position_.move_right();
             }
-            while (!(sides().second < Koords{ENDSCR + Koords{2, 0}})) {
+            while (!(sides().second < Koords{END_SCR + BUFFER_PLACE})) {
                 position_.move_left();
             }
-            while (!(sides().second < ENDSCR)) {
+            while (!(sides().second < END_SCR)) {
                 position_.move_up();
             }
             if (!is_pasible(out)) {
@@ -176,7 +172,6 @@ Brick &Brick::rotade(Field &out)
             else {
                 need_cikle = false;
             }
-            refresh();
         } while(need_cikle);
     }
     show();
@@ -186,10 +181,10 @@ Brick &Brick::rotade(Field &out)
 bool Brick::down(Field &out)
 {
     bool returnVal{false};
-    clean();
+    show(DEF_VALUE);
     auto spare{position_};
     position_.move_down();
-    if (sides().second < ENDSCR && is_pasible(out)) {
+    if (sides().second < END_SCR && is_pasible(out)) {
     }
     else {
         position_ = spare;
@@ -201,10 +196,10 @@ bool Brick::down(Field &out)
 
 Brick &Brick::right(Field &out)
 {
-    clean();
+    show(DEF_VALUE);
     auto spare{position_};
     position_.move_right();
-    if (sides().second < ENDSCR && is_pasible(out)) {
+    if (sides().second < END_SCR && is_pasible(out)) {
     }
     else {
         position_ = spare;
@@ -215,10 +210,10 @@ Brick &Brick::right(Field &out)
 
 Brick &Brick::left(Field &out)
 {
-    clean();
+    show(DEF_VALUE);
     auto spare{position_};
     position_.move_left();
-    if (sides().first > BEGSCR && is_pasible(out)) {
+    if (sides().first > Koords{BEG_SCR - BUFFER_PLACE} && is_pasible(out)) {
     }
     else {
         position_ = spare;
@@ -234,12 +229,6 @@ std::pair<Koords, Koords> Brick::sides() const
     return std::pair<Koords, Koords>(a, b);
 }
 
-const Brick &Brick::clean() const
-{
-    show(DEF_VALUE);
-    return *this;
-}
-
 const Koords &Brick::get_koords() const
 {
     return position_;
@@ -247,7 +236,7 @@ const Koords &Brick::get_koords() const
 
 Brick &Brick::rotor()
 {
-    decltype(field_) temp(field_[0].size(), std::remove_reference_t<decltype(field_[0])> (field_.size(), DEF_VALUE));
+    Field temp(field_[0].size(), std::remove_reference_t<decltype(field_[0])> (field_.size(), DEF_VALUE));
     bool no_uptade_center{true};
     for (unsigned i{}; i < field_.size(); ++i) {
         for (unsigned j{}; j < field_[i].size(); ++j) {
@@ -261,7 +250,6 @@ Brick &Brick::rotor()
     }
     direction_++;
     field_ = temp;
-    refresh();
     return *this;
 }
 

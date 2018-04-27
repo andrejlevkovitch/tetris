@@ -9,18 +9,19 @@ set(LIBRARY_TETRIS "tet")
 file(GLOB SRC_TETRIS "sources/libtetris/*.cpp")
 
 set(CMAKE_CXX_COMPILER clang++)
-add_definitions(-Wall -std=c++14 -g)
+add_definitions(-Wall -std=c++14)
 
 include_directories(include)
 
 find_package(Curses REQUIRED)
+find_package(Threads REQUIRED)
 include_directories(${CURSES_INCLUDE_DIR})
 
 add_library(${LIBRARY_TETRIS} SHARED ${SRC_TETRIS})
 
 add_executable(${PROJECT_NAME} ${SRC_MAIN})
 
-target_link_libraries(${PROJECT_NAME} ${CURSES_LIBRARIES} ${LIBRARY_TETRIS})
+target_link_libraries(${PROJECT_NAME} ${CURSES_LIBRARIES} ${LIBRARY_TETRIS} ${CMAKE_THREAD_LIBS_INIT})
 
 install(TARGETS ${LIBRARY_TETRIS} DESTINATION /usr/lib)
 install(TARGETS ${PROJECT_NAME} DESTINATION /usr/local/bin)

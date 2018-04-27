@@ -5,15 +5,18 @@
 #include<vector>
 #include<cstdbool>
 #include<tuple>
+#include<future>
+#include<mutex>
+#include<thread>
 
-Tetris::Tetris()
+Tetris::Tetris() : score_{}, level_{}, lines_{}
 {
-    screen_.resize(SIZEY, std::remove_reference_t<decltype(screen_[0])> (SIZEX, DEF_VALUE));
+    screen_.resize(SIZE_Y, std::remove_reference_t<decltype(screen_[0])> (SIZE_X, DEF_VALUE));
     {
         {
-            Brick temp = current_;
+            Brick temp = currentBrick_;
         }
-        current_ = Brick{};
+        currentBrick_ = Brick{};
     }
 }
 
@@ -23,7 +26,7 @@ Tetris::~Tetris()
 
 void Tetris::frame() const
 {
-    Koords temp{BEGSCR};
+    Koords temp{BEG_SCR};
     attron(COLOR_PAIR(FRAME_CELL));
     move_add(temp, ACS_ULCORNER);
     for (int i{}; i < screen_[0].size(); ++i) {
@@ -31,7 +34,7 @@ void Tetris::frame() const
         addch(ACS_HLINE);
     }
     addch(ACS_URCORNER);
-    Koords other_side{temp + Koords{0, SIZEX * 2 + 1}};
+    Koords other_side{temp + Koords{0, SIZE_X * 2 + 1}};
     for (int i{}; i < screen_.size(); ++i) {
         move_add(temp.move_down(), ACS_VLINE);
         move_add(other_side.move_down(), ACS_VLINE);
@@ -43,14 +46,13 @@ void Tetris::frame() const
     }
     addch(ACS_LRCORNER);
     attroff(COLOR_PAIR(FRAME_CELL));
-
-    print_screen();
+    refresh();
     return;
 }
 
 void Tetris::print_screen() const
 {
-    Koords temp{BEGSCR + Koords{0, 1}};
+    Koords temp{BEG_SCR + Koords{0, 1}};
     for (auto i : screen_) {
         move_at(temp.move_down());
         for (auto j : i) {
@@ -58,51 +60,122 @@ void Tetris::print_screen() const
             addch(j);
         }
     }
+    move_at(SCORE);
+    printw("SCORE: %u", score_);
+    move_at(SCORE + Koords{1, 0});
+    printw("LINES: %hu", lines_);
+    move_at(SCORE + Koords{2, 0});
+    printw("LEVEL: %hu", level_);
     refresh();
     return;
 }
 
-void Tetris::game()
+auto Tetris::game() -> std::pair<decltype(score_), decltype(level_)>
 {
     frame();
+    print_screen();
     int ch{};
+    bool endGame{false};
+    bool forcedEnd{false};
+    int defoltAct{0};
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    auto newThreed = std::async(std::launch::async, [&] {endless(forcedEnd, defoltAct, level_);});
     do {
-        current_.show();
+        currentBrick_.show();
         Brick next{};
-        bool needNewBrick{false};
-        while ((ch = getch()) != ESC) {
+        bool needNewBreek{false};
+        do {
+            do {
+                threadMutex.lock();
+                if (!defoltAct) {
+                    ch = is_input();
+                }
+                else {
+                    ch = defoltAct;
+                    defoltAct = 0;
+                }
+                threadMutex.unlock();
+            } while (!ch);
             switch (ch) {
                 case KEY_UP:
-                    current_.rotade(screen_);
+                    currentBrick_.rotade(screen_);
                     break;
                 case KEY_DOWN:
-                    needNewBrick = current_.down(screen_);
+                    needNewBreek = currentBrick_.down(screen_);
                     break;
                 case KEY_LEFT:
-                    current_.left(screen_);
+                    currentBrick_.left(screen_);
                     break;
                 case KEY_RIGHT:
-                    current_.right(screen_);
+                    currentBrick_.right(screen_);
+                    break;
+                case '':
+                    ch = ESC;
                     break;
                 default:
                     break;
             }
-            if (needNewBrick) {
-                intake(current_);
+            if (needNewBreek) {
+                if (!intake()) {
+                    endGame = true;
+                    ch = ESC;
+                }
                 break;
             }
+        } while (ch != ESC);
+        if (ch == ESC) {
+            threadMutex.lock();
+            forcedEnd = true;
+            threadMutex.unlock();
+            if (endGame) {
+                move_at(END_GAME_MESAGE);
+                printw ("YOU LOSE...");
+                move_at(END_GAME_MESAGE + Koords{1, 0});
+                printw ("Press ENTER");
+                refresh();
+                while (getch() != '\n')
+                    continue;
+            }
+            break;
         }
-        if (delete_all_solutions()) {
-            frame();
+        {
+            auto count{delete_all_solutions()};
+            switch(count) {
+                case 1:
+                    score_ += ONE;
+                    break;
+                case 2:
+                    score_ += TWO;
+                    break;
+                case 3:
+                    score_ += TRI;
+                    break;
+                case 4:
+                    score_ += TET;
+                    break;
+                default:
+                    break;
+            }
+            if (count) {
+                if (lines_ >= LINES_TO_NEW_LEVEL) {
+                    lines_ = 0;
+                    threadMutex.lock();
+                    ++level_;
+                    threadMutex.unlock();
+                }
+                print_screen();
+            }
         }
-        current_ = next;
+        currentBrick_= next;
     } while (ch != ESC);
-    return;
+    clear();
+    refresh();
+    return std::pair<decltype(score_), decltype(level_)>{score_, level_};
 }
 
-bool Tetris::delete_all_solutions()
+unsigned short Tetris::delete_all_solutions()
 {
-    bool rezult{false};
+    unsigned short rezult{};
     for (int i{}; i < screen_.size(); ++i) {
         int counter{};
         for (int j{}; j < screen_[i].size(); ++ j) {
@@ -114,7 +187,8 @@ bool Tetris::delete_all_solutions()
             }
         }
         if (counter == screen_[i].size()) {
-            rezult = true;
+            ++lines_;
+            ++rezult;
             screen_.erase(screen_.begin() + i);
             screen_.insert(screen_.begin(), std::remove_reference_t<decltype(screen_[i])>(screen_[i].size(), DEF_VALUE));
         }
@@ -122,17 +196,22 @@ bool Tetris::delete_all_solutions()
     return rezult;
 }
 
-void Tetris::intake(const Brick &in)
+bool Tetris::intake()
 {
-    auto temp{in.sides().first};
-    temp.to_index();
-    auto block{in.get_block()};
-    for (int i = temp.getY(), l{}; l < block.size(); ++i, ++l) {
-        for (int j = temp.getX(), m{}; m < block[l].size(); ++j, ++m) {
-            if (block[l][m] != DEF_VALUE) {
-                screen_[i][j] = block[l][m];
+    auto temp{currentBrick_.sides().first};
+    if (temp > BEG_SCR) {
+        temp.to_index();
+        auto block{currentBrick_.get_block()};
+        for (int i = temp.getY(), l{}; l < block.size(); ++i, ++l) {
+            for (int j = temp.getX(), m{}; m < block[l].size(); ++j, ++m) {
+                if (block[l][m] != DEF_VALUE) {
+                    screen_[i][j] = block[l][m];
+                }
             }
         }
+        return true;
     }
-    return;
+    else {
+        return false;
+    }
 }

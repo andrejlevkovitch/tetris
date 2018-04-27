@@ -35,31 +35,31 @@ bool Koords::operator>(const Koords &right) const
 
 Koords &Koords::move_right()
 {
-    x_ += PASSIDE;
+    x_ += PAS_SIDE;
     return *this;
 }
 
 Koords &Koords::move_left()
 {
-    x_ -= PASSIDE;
+    x_ -= PAS_SIDE;
     return *this;
 }
 
 Koords &Koords::move_up()
 {
-    y_ -= PASFRWD;
+    y_ -= PAS_FRWD;
     return *this;
 }
 
 Koords &Koords::move_down()
 {
-    y_ += PASFRWD;
+    y_ += PAS_FRWD;
     return *this;
 }
 
 Koords &Koords::to_index()
 {
-    *this = *this - BEGSCR - Koords{1, 1};
+    *this = *this - BEG_SCR - Koords{1, 1};
     *this = Koords{y_, x_ / 2};
     return *this;
 }

@@ -295,6 +295,33 @@ sources/libtetris/move_at.cpp.s:
 	$(MAKE) -f CMakeFiles/tet.dir/build.make CMakeFiles/tet.dir/sources/libtetris/move_at.cpp.s
 .PHONY : sources/libtetris/move_at.cpp.s
 
+sources/libtetris/other_fun.o: sources/libtetris/other_fun.cpp.o
+
+.PHONY : sources/libtetris/other_fun.o
+
+# target to build an object file
+sources/libtetris/other_fun.cpp.o:
+	$(MAKE) -f CMakeFiles/tet.dir/build.make CMakeFiles/tet.dir/sources/libtetris/other_fun.cpp.o
+.PHONY : sources/libtetris/other_fun.cpp.o
+
+sources/libtetris/other_fun.i: sources/libtetris/other_fun.cpp.i
+
+.PHONY : sources/libtetris/other_fun.i
+
+# target to preprocess a source file
+sources/libtetris/other_fun.cpp.i:
+	$(MAKE) -f CMakeFiles/tet.dir/build.make CMakeFiles/tet.dir/sources/libtetris/other_fun.cpp.i
+.PHONY : sources/libtetris/other_fun.cpp.i
+
+sources/libtetris/other_fun.s: sources/libtetris/other_fun.cpp.s
+
+.PHONY : sources/libtetris/other_fun.s
+
+# target to generate assembly for a file
+sources/libtetris/other_fun.cpp.s:
+	$(MAKE) -f CMakeFiles/tet.dir/build.make CMakeFiles/tet.dir/sources/libtetris/other_fun.cpp.s
+.PHONY : sources/libtetris/other_fun.cpp.s
+
 sources/libtetris/tetris.o: sources/libtetris/tetris.cpp.o
 
 .PHONY : sources/libtetris/tetris.o
@@ -321,6 +348,33 @@ sources/libtetris/tetris.s: sources/libtetris/tetris.cpp.s
 sources/libtetris/tetris.cpp.s:
 	$(MAKE) -f CMakeFiles/tet.dir/build.make CMakeFiles/tet.dir/sources/libtetris/tetris.cpp.s
 .PHONY : sources/libtetris/tetris.cpp.s
+
+sources/libtetris/threads.o: sources/libtetris/threads.cpp.o
+
+.PHONY : sources/libtetris/threads.o
+
+# target to build an object file
+sources/libtetris/threads.cpp.o:
+	$(MAKE) -f CMakeFiles/tet.dir/build.make CMakeFiles/tet.dir/sources/libtetris/threads.cpp.o
+.PHONY : sources/libtetris/threads.cpp.o
+
+sources/libtetris/threads.i: sources/libtetris/threads.cpp.i
+
+.PHONY : sources/libtetris/threads.i
+
+# target to preprocess a source file
+sources/libtetris/threads.cpp.i:
+	$(MAKE) -f CMakeFiles/tet.dir/build.make CMakeFiles/tet.dir/sources/libtetris/threads.cpp.i
+.PHONY : sources/libtetris/threads.cpp.i
+
+sources/libtetris/threads.s: sources/libtetris/threads.cpp.s
+
+.PHONY : sources/libtetris/threads.s
+
+# target to generate assembly for a file
+sources/libtetris/threads.cpp.s:
+	$(MAKE) -f CMakeFiles/tet.dir/build.make CMakeFiles/tet.dir/sources/libtetris/threads.cpp.s
+.PHONY : sources/libtetris/threads.cpp.s
 
 sources/main.o: sources/main.cpp.o
 
@@ -375,9 +429,15 @@ help:
 	@echo "... sources/libtetris/move_at.o"
 	@echo "... sources/libtetris/move_at.i"
 	@echo "... sources/libtetris/move_at.s"
+	@echo "... sources/libtetris/other_fun.o"
+	@echo "... sources/libtetris/other_fun.i"
+	@echo "... sources/libtetris/other_fun.s"
 	@echo "... sources/libtetris/tetris.o"
 	@echo "... sources/libtetris/tetris.i"
 	@echo "... sources/libtetris/tetris.s"
+	@echo "... sources/libtetris/threads.o"
+	@echo "... sources/libtetris/threads.i"
+	@echo "... sources/libtetris/threads.s"
 	@echo "... sources/main.o"
 	@echo "... sources/main.i"
 	@echo "... sources/main.s"

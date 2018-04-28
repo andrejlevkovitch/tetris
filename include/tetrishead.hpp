@@ -73,7 +73,7 @@ class Koords {
         Koords &to_index();
 };
 
-const Koords BEG_SCR{5, 9};
+const Koords BEG_SCR{0, 0};
 const Koords END_SCR{BEG_SCR + Koords{SIZE_Y + 1, SIZE_X * 2 + 1}};
 const Koords IN_POSITION{Koords{BEG_SCR + Koords{0, SIZE_X + 1}}};
 const Koords DEF_CENTRUM{0, 1};

@@ -109,6 +109,17 @@ auto Tetris::game() -> std::pair<decltype(score_), decltype(level_)>
                 case KEY_RIGHT:
                     currentBrick_.right(screen_);
                     break;
+                case PAUSE:
+                    move_at(END_GAME_MESAGE);
+                    printw("...PAUSE...");
+                    refresh();
+                    ch = 0;
+                    while (!(ch = is_input())) {
+                        continue;
+                    }
+                    print_screen();
+                    currentBrick_.show();
+                    break;
                 case '':
                     ch = ESC;
                     break;

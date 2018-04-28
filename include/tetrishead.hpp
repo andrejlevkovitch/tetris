@@ -7,6 +7,8 @@
 #include<mutex>
 #include<stdio.h>
 
+#define MAX_LEN_NAME 10
+
 const std::string HOME{getenv("HOME")};
 const std::string record_table{HOME + "/.tetris_record_table.txt"};
 
@@ -17,10 +19,10 @@ const unsigned BEGIN_TIME_DOWN{1000};
 const unsigned LINES_TO_NEW_LEVEL{8};
 
 const unsigned SIZE_LIST_RECORDS{10};
-const unsigned MAX_LEN_NAME{10};
 
 const int ESC{033};
 const int ENTER{012};
+const int PAUSE{'p'};
 
 enum Cell{DEFAULT_CELL, FRAME_CELL, FREE_CELL, BRICK_R_CELL, BRICK_G_CELL, BRICK_Y_CELL, BRICK_B_CELL, BRICK_C_CELL, BRICK_M_CELL};
 
@@ -138,3 +140,5 @@ void endless(const bool &, int &, unsigned short &);
 void save_rezult(const std::pair<unsigned, unsigned short> &);
 bool operator<(std::pair<unsigned, unsigned short> &, std::pair<unsigned, unsigned short> &);
 void show_record_table();
+void read_from_file(std::vector<Gamer> &);
+void save_in_file(std::vector<Gamer> &);

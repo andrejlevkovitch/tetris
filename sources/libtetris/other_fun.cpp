@@ -5,8 +5,10 @@
 #include<vector>
 #include<tuple>
 #include<cstdbool>
-#include<iostream>
 #include<curses.h>
+
+#define STRLEN_(x) #x
+#define STRLEN(x) STRLEN_(x)
 
 Direction &operator++(Direction &dir, int)
 {
@@ -14,41 +16,27 @@ Direction &operator++(Direction &dir, int)
     return dir = (++a > 3) ? RIGHT : static_cast<Direction>(a);
 }
 
+Gamer::Gamer(std::string name, std::pair<unsigned, unsigned short> rezult) : name_(name), rezult_(rezult)
+{
+}
+
 void save_rezult(const std::pair<unsigned, unsigned short> &pasiblRecord)
 {
     refresh();
-    std::ifstream fin;
-    std::ofstream fout;
 
     std::vector<Gamer> list{SIZE_LIST_RECORDS};
-    fin.open(record_table);
-    if (fin.is_open()) {
-        unsigned short count_records{};
-        fin >> count_records;
-        refresh();
-        if (count_records) {
-            for (int i{}; i < count_records; ++i) {
-                fin >> list[i].name_ >> list[i].rezult_.first >> list[i].rezult_.second;
-                while (fin.get() != '\n')
-                    continue;
-            }
-        }
-        fin.close();
-    }
+    read_from_file(list);
 
     for (int i{}; i < list.size(); ++i) {
         if (list[i].rezult_ < pasiblRecord) {
-            char new_name[MAX_LEN_NAME * 10];
-            move(5, 0);
-            for (auto i : list) {
-                printw("%*s %6u %2hu\n", MAX_LEN_NAME, i.name_.c_str(), i.rezult_.first, i.rezult_.second);
-            }
+            char new_name[MAX_LEN_NAME];
+            show_record_table();
             mvprintw(0, 0, "Great!!! You set a new record!\nPlease enter you name:\n");
             printw("%*s %6u %2hu", MAX_LEN_NAME, " ", pasiblRecord.first, pasiblRecord.second);
             move(2, 0);
             refresh();
             echo();
-            scanw("%s", new_name);
+            scanw("%" STRLEN(MAX_LEN_NAME) "s", new_name);
             noecho();
             list.insert(list.begin() + i, Gamer{new_name, pasiblRecord});
             list.erase(list.end());
@@ -56,17 +44,47 @@ void save_rezult(const std::pair<unsigned, unsigned short> &pasiblRecord)
         }
     }
 
+    save_in_file(list);
+
+    clear();
+    refresh();
+    return;
+}
+
+void read_from_file(std::vector<Gamer> &from)
+{
+    std::ifstream fin;
+    fin.open(record_table);
+    if (fin.is_open()) {
+        unsigned short count_records{};
+        fin >> count_records;
+        refresh();
+        if (count_records) {
+            for (int i{}; i < count_records; ++i) {
+                fin >> from[i].name_ >> from[i].rezult_.first >> from[i].rezult_.second;
+                while (fin.get() != '\n')
+                    continue;
+            }
+        }
+        else {
+            save_in_file(from);
+        }
+        fin.close();
+    }
+    return;
+}
+
+void save_in_file(std::vector<Gamer> &in)
+{
+    std::ofstream fout;
     fout.open(record_table);
     if (fout.is_open()) {
-        fout << list.size() << std::endl;
-        for (auto i : list) {
+        fout << in.size() << std::endl;
+        for (auto i : in) {
             fout << i.name_ << " " << i.rezult_.first << " " << i.rezult_.second << std::endl;
         }
         fout.close();
     }
-
-    clear();
-    refresh();
     return;
 }
 
@@ -85,7 +103,7 @@ void show_record_table()
         }
         fin.close();
     }
-    mvprintw (3, 0, "Record table\n");
+    mvprintw (5, 0, "Record table\n");
     for (auto i : list) {
         printw("%*s %6u %2hu\n", MAX_LEN_NAME, i.name_.c_str(), i.rezult_.first, i.rezult_.second);
     }
@@ -99,8 +117,4 @@ bool operator<(std::pair<unsigned, unsigned short> &left, std::pair<unsigned, un
         return true;
     else
         return false;
-}
-
-Gamer::Gamer(std::string name, std::pair<unsigned, unsigned short> rezult) : name_(name), rezult_(rezult)
-{
 }

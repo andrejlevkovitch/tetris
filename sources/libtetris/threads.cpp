@@ -14,7 +14,7 @@ int is_input()
     FD_ZERO(&rfds);
     FD_SET(0, &rfds);
     tv.tv_sec = 0;
-    tv.tv_usec = 10;
+    tv.tv_usec = 100;
     retval = select(1, &rfds, NULL, NULL, &tv);
     if (retval)
         return getch();

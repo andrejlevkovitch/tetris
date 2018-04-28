@@ -22,7 +22,7 @@ const unsigned SIZE_LIST_RECORDS{10};
 
 const int ESC{033};
 const int ENTER{012};
-const int PAUSE{'p'};
+const int PAUSE{' '};
 
 enum Cell{DEFAULT_CELL, FRAME_CELL, FREE_CELL, BRICK_R_CELL, BRICK_G_CELL, BRICK_Y_CELL, BRICK_B_CELL, BRICK_C_CELL, BRICK_M_CELL};
 

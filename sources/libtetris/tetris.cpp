@@ -88,7 +88,7 @@ Rpair Tetris::game()
             do {
                 threadMutex.lock();
                 if (!defoltAct) {
-                    ch = is_input();
+                    ch = input();
                 }
                 else {
                     ch = defoltAct;
@@ -114,7 +114,7 @@ Rpair Tetris::game()
                     printw("...PAUSE...");
                     refresh();
                     ch = 0;
-                    while (!(ch = is_input())) {
+                    while (!(ch = input())) {
                         continue;
                     }
                     print_screen();

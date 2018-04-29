@@ -3,6 +3,7 @@
 #include<curses.h>
 #include"../include/tetrishead.hpp"
 #include<cctype>
+#include<iostream>
 
 int main(int argc, char *argv[])
 {
@@ -11,6 +12,7 @@ int main(int argc, char *argv[])
     noecho();
 
     if (!init_colors()) {
+        std::cout << "Colors are not supported!\n";
         return 1;
     }
 

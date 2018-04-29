@@ -14,7 +14,6 @@
 #include<cstdbool>
 #include<tuple>
 #include<mutex>
-#include<stdio.h>
 
 #define MAX_LEN_NAME 10
 
@@ -112,8 +111,8 @@ class Brick {
         const Brick &show(chtype = BLOCKS[0]) const;
         Brick &rotade(Field &);
         bool down(Field &);
-        Brick &left(Field &);
-        Brick &right(Field &);
+        void left(Field &);
+        void right(Field &);
         const Koords &get_koords() const;
         std::pair<Koords, Koords> sides() const;
         Field get_block() const;
@@ -145,7 +144,7 @@ class Tetris {
 void move_at(const Koords &);
 void move_add(const Koords &, chtype);
 int init_colors(void);
-int is_input();
+int input();
 void endless(const bool &, int &, unsigned short &);
 void save_rezult(const Rpair &);
 bool operator<(Rpair &, Rpair &);

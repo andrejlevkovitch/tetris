@@ -6,7 +6,7 @@
 #include<thread>
 #include<chrono>
 
-int is_input()
+int input()
 {
     fd_set rfds;
     struct timeval tv;

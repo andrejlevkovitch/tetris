@@ -194,7 +194,7 @@ bool Brick::down(Field &out)
     return returnVal;
 }
 
-Brick &Brick::right(Field &out)
+void Brick::right(Field &out)
 {
     show(DEF_VALUE);
     auto spare{position_};
@@ -205,10 +205,10 @@ Brick &Brick::right(Field &out)
         position_ = spare;
     }
     show();
-    return *this;
+    return;
 }
 
-Brick &Brick::left(Field &out)
+void Brick::left(Field &out)
 {
     show(DEF_VALUE);
     auto spare{position_};
@@ -219,7 +219,7 @@ Brick &Brick::left(Field &out)
         position_ = spare;
     }
     show();
-    return *this;
+    return;
 }
 
 std::pair<Koords, Koords> Brick::sides() const

@@ -15,7 +15,7 @@ const std::string record_table{HOME + "/.tetris_record_table.txt"};
 const unsigned SIZE_Y{20};
 const unsigned SIZE_X{10};
 
-const unsigned BEGIN_TIME_DOWN{1000};
+const unsigned BEGIN_TIME_DOWN{800};
 const unsigned LINES_TO_NEW_LEVEL{8};
 
 const unsigned SIZE_LIST_RECORDS{10};

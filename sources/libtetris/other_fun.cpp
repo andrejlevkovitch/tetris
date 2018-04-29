@@ -30,6 +30,7 @@ void save_rezult(const std::pair<unsigned, unsigned short> &pasiblRecord)
     for (int i{}; i < list.size(); ++i) {
         if (list[i].rezult_ < pasiblRecord) {
             char new_name[MAX_LEN_NAME];
+            std::string nName;
             show_record_table();
             mvprintw(0, 0, "Great!!! You set a new record!\nPlease enter you name:\n");
             printw("%*s %6u %2hu", MAX_LEN_NAME, " ", pasiblRecord.first, pasiblRecord.second);
@@ -37,8 +38,12 @@ void save_rezult(const std::pair<unsigned, unsigned short> &pasiblRecord)
             refresh();
             echo();
             scanw("%" STRLEN(MAX_LEN_NAME) "s", new_name);
+            nName = new_name;
+            if (!nName.size()) {
+                nName = "default";
+            }
             noecho();
-            list.insert(list.begin() + i, Gamer{new_name, pasiblRecord});
+            list.insert(list.begin() + i, Gamer{nName, pasiblRecord});
             list.erase(list.end());
             break;
         }
@@ -90,19 +95,8 @@ void save_in_file(std::vector<Gamer> &in)
 
 void show_record_table()
 {
-    std::ifstream fin;
-    fin.open(record_table);
     std::vector<Gamer> list{SIZE_LIST_RECORDS};
-    if (fin.is_open()) {
-        int count_records{};
-        fin >> count_records;
-        for (int i{}; i < count_records; ++i) {
-            fin >> list[i].name_ >> list[i].rezult_.first >> list[i].rezult_.second;
-            while (fin.get() != '\n')
-                continue;
-        }
-        fin.close();
-    }
+    read_from_file(list);
     mvprintw (5, 0, "Record table\n");
     for (auto i : list) {
         printw("%*s %6u %2hu\n", MAX_LEN_NAME, i.name_.c_str(), i.rezult_.first, i.rezult_.second);

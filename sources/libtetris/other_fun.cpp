@@ -16,11 +16,11 @@ Direction &operator++(Direction &dir, int)
     return dir = (++a > 3) ? RIGHT : static_cast<Direction>(a);
 }
 
-Gamer::Gamer(std::string name, std::pair<unsigned, unsigned short> rezult) : name_(name), rezult_(rezult)
+Gamer::Gamer(std::string name, Rpair rezult) : name_(name), rezult_(rezult)
 {
 }
 
-void save_rezult(const std::pair<unsigned, unsigned short> &pasiblRecord)
+void save_rezult(const Rpair &pasiblRecord)
 {
     refresh();
 
@@ -105,7 +105,7 @@ void show_record_table()
     return;
 }
 
-bool operator<(std::pair<unsigned, unsigned short> &left, std::pair<unsigned, unsigned short> &right)
+bool operator<(Rpair &left, Rpair &right)
 {
     if (left.first < right.first)
         return true;

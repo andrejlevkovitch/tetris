@@ -1,5 +1,14 @@
 //tetrishead.hpp
 
+#ifndef TETHEAD
+#define TETHEAD
+
+#ifndef __cplusplus
+#error C++ is required
+#elif __cplusplus <= 201103L
+#error C++14 is required
+#endif
+
 #include<vector>
 #include<curses.h>
 #include<cstdbool>
@@ -8,6 +17,9 @@
 #include<stdio.h>
 
 #define MAX_LEN_NAME 10
+
+typedef std::vector<std::vector<chtype>> Field;
+typedef std::pair<unsigned, unsigned short> Rpair;
 
 const std::string HOME{getenv("HOME")};
 const std::string record_table{HOME + "/.tetris_record_table.txt"};
@@ -41,8 +53,8 @@ const std::vector<chtype>BLOCKS{' ' | COLOR_PAIR(BRICK_R_CELL),
 class Gamer {
     public:
         std::string name_;
-        std::pair<unsigned, unsigned short> rezult_;
-        Gamer(std::string = "default", std::pair<unsigned, unsigned short> = std::pair<unsigned, unsigned short>{0, 0});
+        Rpair rezult_;
+        Gamer(std::string = "default", Rpair = Rpair{0, 0});
 };
 
 static std::mutex threadMutex;
@@ -81,8 +93,6 @@ const Koords SHOW_POSITION{Koords{BEG_SCR + Koords{3, 30}}};
 const Koords SCORE{BEG_SCR + Koords{6, 26}};
 const Koords END_GAME_MESAGE{Koords{BEG_SCR + Koords{10, 6}}};
 const Koords BUFFER_PLACE{3, 0};
-
-typedef std::vector<std::vector<chtype>> Field;
 
 class Brick {
     private:
@@ -124,7 +134,7 @@ class Tetris {
     public:
         Tetris();
         ~Tetris();
-        std::pair<decltype(score_), decltype(level_)> game();
+        Rpair game();
     private:
         void frame() const;
         void print_screen() const;
@@ -137,8 +147,10 @@ void move_add(const Koords &, chtype);
 int init_colors(void);
 int is_input();
 void endless(const bool &, int &, unsigned short &);
-void save_rezult(const std::pair<unsigned, unsigned short> &);
-bool operator<(std::pair<unsigned, unsigned short> &, std::pair<unsigned, unsigned short> &);
+void save_rezult(const Rpair &);
+bool operator<(Rpair &, Rpair &);
 void show_record_table();
 void read_from_file(std::vector<Gamer> &);
 void save_in_file(std::vector<Gamer> &);
+
+#endif

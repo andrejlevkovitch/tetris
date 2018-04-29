@@ -70,7 +70,7 @@ void Tetris::print_screen() const
     return;
 }
 
-auto Tetris::game() -> std::pair<decltype(score_), decltype(level_)>
+Rpair Tetris::game()
 {
     frame();
     print_screen();
@@ -181,7 +181,7 @@ auto Tetris::game() -> std::pair<decltype(score_), decltype(level_)>
     } while (ch != ESC);
     clear();
     refresh();
-    return std::pair<decltype(score_), decltype(level_)>{score_, level_};
+    return Rpair{score_, level_};
 }
 
 unsigned short Tetris::delete_all_solutions()

@@ -12,6 +12,7 @@
 #include<vector>
 #include<curses.h>
 #include<cstdbool>
+#include<cstdlib>
 #include<tuple>
 #include<mutex>
 

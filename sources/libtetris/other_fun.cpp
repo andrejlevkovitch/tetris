@@ -85,7 +85,7 @@ void save_in_file(std::vector<Gamer> &in)
     fout.open(record_table);
     if (fout.is_open()) {
         fout << in.size() << std::endl;
-        for (auto i : in) {
+        for (auto &i : in) {
             fout << i.name_ << " " << i.rezult_.first << " " << i.rezult_.second << std::endl;
         }
         fout.close();
@@ -98,7 +98,7 @@ void show_record_table()
     std::vector<Gamer> list{SIZE_LIST_RECORDS};
     read_from_file(list);
     mvprintw (5, 0, "Record table\n");
-    for (auto i : list) {
+    for (const auto &i : list) {
         printw("%*s %6u %2hu\n", MAX_LEN_NAME, i.name_.c_str(), i.rezult_.first, i.rezult_.second);
     }
     refresh();

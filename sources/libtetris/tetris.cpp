@@ -53,9 +53,9 @@ void Tetris::frame() const
 void Tetris::print_screen() const
 {
     Koords temp{BEG_SCR + Koords{0, 1}};
-    for (auto i : screen_) {
+    for (const auto &i : screen_) {
         move_at(temp.move_down());
-        for (auto j : i) {
+        for (const auto &j : i) {
             addch(j);
             addch(j);
         }

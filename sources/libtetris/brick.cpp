@@ -98,9 +98,9 @@ const Brick &Brick::show(chtype block) const
     if (block == BLOCKS[0]) {
         block = block_;
     }
-    for (auto i : field_) {
+    for (const auto &i : field_) {
         temp = stat;
-        for (auto j : i) {
+        for (const auto &j : i) {
             if (j != DEF_VALUE && temp > BEG_SCR) {
                 move_at(temp);
                 addch(block);

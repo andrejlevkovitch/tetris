@@ -60,6 +60,12 @@ void Tetris::print_screen() const
             addch(j);
         }
     }
+    refresh();
+    return;
+}
+
+void Tetris::print_level() const
+{
     move_at(SCORE);
     printw("SCORE: %u", score_);
     move_at(SCORE + Koords{1, 0});
@@ -74,6 +80,7 @@ Rpair Tetris::game()
 {
     frame();
     print_screen();
+    print_level();
     int ch{};
     bool endGame{false};
     bool forcedEnd{false};
@@ -117,9 +124,7 @@ Rpair Tetris::game()
                     while (!(ch = input())) {
                         continue;
                     }
-                    threadMutex.lock();
                     print_screen();
-                    threadMutex.unlock();
                     currentBrick_.show();
                     break;
                 case '':
@@ -175,8 +180,9 @@ Rpair Tetris::game()
                     ++level_;
                     threadMutex.unlock();
                 }
-                threadMutex.lock();
                 print_screen();
+                threadMutex.lock();
+                print_level();
                 threadMutex.unlock();
             }
             currentBrick_= next;

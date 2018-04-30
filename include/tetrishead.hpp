@@ -138,6 +138,7 @@ class Tetris {
     private:
         void frame() const;
         void print_screen() const;
+        void print_level() const;
         bool intake();
         unsigned short delete_all_solutions();
 };

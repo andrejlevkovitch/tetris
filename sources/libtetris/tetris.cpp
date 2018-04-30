@@ -86,7 +86,7 @@ Rpair Tetris::game()
     bool forcedEnd{false};
     int defoltAct{0};
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    auto newThreed = std::async(std::launch::async, [&] {endless(forcedEnd, defoltAct, level_);});
+    auto newThreed = std::async(std::launch::async, [&forcedEnd, &defoltAct, this] {endless(forcedEnd, defoltAct, level_);});
     do {
         currentBrick_.show();
         Brick next{};

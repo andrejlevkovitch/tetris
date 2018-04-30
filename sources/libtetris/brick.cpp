@@ -225,7 +225,7 @@ void Brick::left(Field &out)
 std::pair<Koords, Koords> Brick::sides() const
 {
     Koords a{position_ - Koords{center_ + Koords{0, center_.getX()}}};
-    Koords b{a + Koords{field_.size() - 1, field_[0].size() * 2 - 1}};
+    Koords b{a + Koords(field_.size() - 1, field_[0].size() * 2 - 1)};
     return std::pair<Koords, Koords>(a, b);
 }
 
@@ -238,12 +238,12 @@ Brick &Brick::rotor()
 {
     Field temp(field_[0].size(), std::remove_reference_t<decltype(field_[0])> (field_.size(), DEF_VALUE));
     bool no_uptade_center{true};
-    for (unsigned i{}; i < field_.size(); ++i) {
-        for (unsigned j{}; j < field_[i].size(); ++j) {
-            unsigned n = field_.size() - i - 1;
+    for (int i{}; i < field_.size(); ++i) {
+        for (int j{}; j < field_[i].size(); ++j) {
+            int n = field_.size() - i - 1;
             temp[j][n] = field_[i][j];
-            if (center_ == Koords{i, j} && no_uptade_center) {
-                center_ = Koords{j, n};
+            if (center_ == Koords(i, j) && no_uptade_center) {
+                center_ = Koords(j, n);
                 no_uptade_center = false;
             }
         }

@@ -67,8 +67,7 @@ class Koords {
         static const unsigned PAS_SIDE{2};
         static const unsigned PAS_FRWD{1};
     public:
-        template<typename T, typename P>
-            explicit Koords(T y = 0, P x = 0) : y_(y), x_(x) {};
+        explicit Koords(short = 0, short = 0);
         Koords(const Koords &);
         auto getY() const -> decltype(y_);
         auto getX() const -> decltype(x_);

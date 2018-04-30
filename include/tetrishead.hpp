@@ -86,11 +86,11 @@ class Koords {
 
 const Koords BEG_SCR{0, 0};
 const Koords END_SCR{BEG_SCR + Koords{SIZE_Y + 1, SIZE_X * 2 + 1}};
-const Koords IN_POSITION{Koords{BEG_SCR + Koords{0, SIZE_X + 1}}};
+const Koords IN_POSITION{BEG_SCR + Koords{0, SIZE_X + 1}};
 const Koords DEF_CENTRUM{0, 1};
-const Koords SHOW_POSITION{Koords{BEG_SCR + Koords{3, 30}}};
-const Koords SCORE{BEG_SCR + Koords{6, 26}};
-const Koords END_GAME_MESAGE{Koords{BEG_SCR + Koords{10, 6}}};
+const Koords SHOW_POSITION{Koords{END_SCR + Koords(- END_SCR.getY() + 3, 10)}};
+const Koords SCORE{SHOW_POSITION + Koords{3, - 4}};
+const Koords END_GAME_MESAGE{Koords{BEG_SCR + Koords(SIZE_Y / 2, SIZE_X - 5)}};
 const Koords BUFFER_PLACE{3, 0};
 
 class Brick {

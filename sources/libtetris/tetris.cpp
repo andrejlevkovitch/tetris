@@ -117,7 +117,9 @@ Rpair Tetris::game()
                     while (!(ch = input())) {
                         continue;
                     }
+                    threadMutex.lock();
                     print_screen();
+                    threadMutex.unlock();
                     currentBrick_.show();
                     break;
                 case '':
@@ -147,9 +149,8 @@ Rpair Tetris::game()
                 while (getch() != '\n')
                     continue;
             }
-            break;
         }
-        {
+        else {
             auto count{delete_all_solutions()};
             switch(count) {
                 case 1:
@@ -174,10 +175,12 @@ Rpair Tetris::game()
                     ++level_;
                     threadMutex.unlock();
                 }
+                threadMutex.lock();
                 print_screen();
+                threadMutex.unlock();
             }
+            currentBrick_= next;
         }
-        currentBrick_= next;
     } while (ch != ESC);
     clear();
     refresh();

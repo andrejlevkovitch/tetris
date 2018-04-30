@@ -29,7 +29,7 @@ void save_rezult(const Rpair &pasiblRecord)
 
     for (int i{}; i < list.size(); ++i) {
         if (list[i].rezult_ < pasiblRecord) {
-            char new_name[MAX_LEN_NAME];
+            char new_name[MAX_LEN_NAME + 1];
             std::string nName;
             show_record_table();
             mvprintw(0, 0, "Great!!! You set a new record!\nPlease enter you name:\n");

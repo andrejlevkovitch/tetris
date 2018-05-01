@@ -10,11 +10,13 @@
 #endif
 
 #include<vector>
+#include<list>
 #include<curses.h>
 #include<cstdbool>
 #include<cstdlib>
 #include<tuple>
 #include<mutex>
+#include<fstream>
 
 #define MAX_LEN_NAME 10
 
@@ -51,15 +53,19 @@ const std::vector<chtype>BLOCKS{' ' | COLOR_PAIR(BRICK_R_CELL),
 };
 
 class Gamer {
-    public:
+    private:
         std::string name_;
         Rpair rezult_;
+    public:
         Gamer(std::string = "default", Rpair = Rpair{0, 0});
+        bool operator<(const Rpair &) const;
+        friend void show_record_table();
+        friend std::ifstream &operator>>(std::ifstream &, Gamer &);
+        friend std::ofstream &operator<<(std::ofstream &, Gamer &);
 };
 
 static std::mutex threadMutex;
 
-class Brick;
 class Koords {
     private:
         short y_;
@@ -73,7 +79,6 @@ class Koords {
         auto getX() const -> decltype(x_);
         bool operator<(const Koords &) const;
         bool operator>(const Koords &) const;
-        Koords &operator=(const Brick &);
         Koords operator-(const Koords &) const;
         Koords operator+(const Koords &) const;
         bool operator==(const Koords &) const;
@@ -149,8 +154,8 @@ int input();
 void endless(const bool &, int &, unsigned short &);
 void save_rezult(const Rpair &);
 bool operator<(Rpair &, Rpair &);
+void read_from_file(std::list<Gamer> &);
+void save_in_file(std::list<Gamer> &);
 void show_record_table();
-void read_from_file(std::vector<Gamer> &);
-void save_in_file(std::vector<Gamer> &);
 
 #endif

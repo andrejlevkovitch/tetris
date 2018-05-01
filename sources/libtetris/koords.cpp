@@ -78,11 +78,6 @@ Koords Koords::operator+(const Koords &right) const
     return Koords(y_ + right.y_, x_ + right.x_);
 }
 
-Koords &Koords::operator=(const Brick &in)
-{
-    return *this = in.get_koords();
-}
-
 bool Koords::operator==(const Koords &right) const
 {
     if (y_ == right.y_ && x_ == right.x_)

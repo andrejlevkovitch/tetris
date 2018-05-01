@@ -11,7 +11,7 @@
 
 Tetris::Tetris() : score_{}, level_{}, lines_{}
 {
-    screen_.resize(SIZE_Y, std::remove_reference_t<decltype(screen_[0])> (SIZE_X, DEF_VALUE));
+    screen_.resize(SIZE_Y, decltype(screen_)::value_type(SIZE_X, DEF_VALUE));
     {
         {
             Brick temp = currentBrick_;
@@ -86,7 +86,7 @@ Rpair Tetris::game()
     bool forcedEnd{false};
     int defoltAct{0};
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    auto newThreed = std::async(std::launch::async, [&forcedEnd, &defoltAct, this] {endless(forcedEnd, defoltAct, level_);});
+    auto newThreed = std::async(std::launch::async, [&] {endless(forcedEnd, defoltAct, level_);});
     do {
         currentBrick_.show();
         Brick next{};
@@ -210,7 +210,7 @@ unsigned short Tetris::delete_all_solutions()
             ++lines_;
             ++rezult;
             screen_.erase(screen_.begin() + i);
-            screen_.insert(screen_.begin(), std::remove_reference_t<decltype(screen_[i])>(screen_[i].size(), DEF_VALUE));
+            screen_.insert(screen_.begin(), decltype(screen_)::value_type(screen_[i].size(), DEF_VALUE));
         }
     }
     return rezult;

@@ -214,6 +214,33 @@ sources/libtetris/brick.cpp.s:
 	$(MAKE) -f CMakeFiles/tet.dir/build.make CMakeFiles/tet.dir/sources/libtetris/brick.cpp.s
 .PHONY : sources/libtetris/brick.cpp.s
 
+sources/libtetris/gamer.o: sources/libtetris/gamer.cpp.o
+
+.PHONY : sources/libtetris/gamer.o
+
+# target to build an object file
+sources/libtetris/gamer.cpp.o:
+	$(MAKE) -f CMakeFiles/tet.dir/build.make CMakeFiles/tet.dir/sources/libtetris/gamer.cpp.o
+.PHONY : sources/libtetris/gamer.cpp.o
+
+sources/libtetris/gamer.i: sources/libtetris/gamer.cpp.i
+
+.PHONY : sources/libtetris/gamer.i
+
+# target to preprocess a source file
+sources/libtetris/gamer.cpp.i:
+	$(MAKE) -f CMakeFiles/tet.dir/build.make CMakeFiles/tet.dir/sources/libtetris/gamer.cpp.i
+.PHONY : sources/libtetris/gamer.cpp.i
+
+sources/libtetris/gamer.s: sources/libtetris/gamer.cpp.s
+
+.PHONY : sources/libtetris/gamer.s
+
+# target to generate assembly for a file
+sources/libtetris/gamer.cpp.s:
+	$(MAKE) -f CMakeFiles/tet.dir/build.make CMakeFiles/tet.dir/sources/libtetris/gamer.cpp.s
+.PHONY : sources/libtetris/gamer.cpp.s
+
 sources/libtetris/init_colors.o: sources/libtetris/init_colors.cpp.o
 
 .PHONY : sources/libtetris/init_colors.o
@@ -420,6 +447,9 @@ help:
 	@echo "... sources/libtetris/brick.o"
 	@echo "... sources/libtetris/brick.i"
 	@echo "... sources/libtetris/brick.s"
+	@echo "... sources/libtetris/gamer.o"
+	@echo "... sources/libtetris/gamer.i"
+	@echo "... sources/libtetris/gamer.s"
 	@echo "... sources/libtetris/init_colors.o"
 	@echo "... sources/libtetris/init_colors.i"
 	@echo "... sources/libtetris/init_colors.s"

@@ -22,30 +22,30 @@ Brick::Brick() : direction_{RIGHT}, position_{SHOW_POSITION}, center_{DEF_CENTRU
     }
     switch(figure) {
         case BRICK_I:
-            field_.resize(1, std::remove_reference_t<decltype(field_[0])> (4, DEF_VALUE));
+            field_.resize(1, decltype(field_)::value_type(4, DEF_VALUE));
             for (int i{}; i < field_[0].size(); ++i) {
                 field_[0][i] = block_;
             }
             break;
         case BRICK_J:
-            field_.resize(2, std::remove_reference_t<decltype(field_[0])> (3, DEF_VALUE));
+            field_.resize(2, decltype(field_)::value_type(3, DEF_VALUE));
             field_[1][2] = block_;
             for (int i{}; i < field_[0].size(); ++i) {
                 field_[0][i] = block_;
             }
             break;
         case BRICK_L:
-            field_.resize(2, std::remove_reference_t<decltype(field_[0])> (3, DEF_VALUE));
+            field_.resize(2, decltype(field_)::value_type(3, DEF_VALUE));
             field_[1][0] = block_;
             for (int i{}; i < field_[0].size(); ++i) {
                 field_[0][i] = block_;
             }
             break;
         case BRICK_O:
-            field_.resize(2, std::remove_reference_t<decltype(field_[0])> (2, block_));
+            field_.resize(2, decltype(field_)::value_type(2, block_));
             break;
         case BRICK_S:
-            field_.resize(2, std::remove_reference_t<decltype(field_[0])> (3, DEF_VALUE));
+            field_.resize(2, decltype(field_)::value_type (3, DEF_VALUE));
             for (int i{}; i < field_.size(); ++i) {
                 for (int j{1 - i}; j + i < field_[i].size(); ++j) {
                     field_[i][j] = block_;
@@ -53,14 +53,14 @@ Brick::Brick() : direction_{RIGHT}, position_{SHOW_POSITION}, center_{DEF_CENTRU
             }
             break;
         case BRICK_T:
-            field_.resize(2, std::remove_reference_t<decltype(field_[0])> (3, DEF_VALUE));
+            field_.resize(2, decltype(field_)::value_type(3, DEF_VALUE));
             field_[0][1] = block_;
             for (int i{}; i < field_[1].size(); ++i) {
                 field_[1][i] = block_;
             }
             break;
         case BRICK_Z:
-            field_.resize(2, std::remove_reference_t<decltype(field_[0])> (3, DEF_VALUE));
+            field_.resize(2, decltype(field_)::value_type(3, DEF_VALUE));
             for (int i{}; i < field_.size(); ++i) {
                 for (int j{i}; j - i < field_[i].size() - 1; ++j) {
                     field_[i][j] = block_;
@@ -236,7 +236,7 @@ const Koords &Brick::get_koords() const
 
 Brick &Brick::rotor()
 {
-    Field temp(field_[0].size(), std::remove_reference_t<decltype(field_[0])> (field_.size(), DEF_VALUE));
+    Field temp(field_[0].size(), decltype(field_)::value_type(field_.size(), DEF_VALUE));
     bool no_uptade_center{true};
     for (int i{}; i < field_.size(); ++i) {
         for (int j{}; j < field_[i].size(); ++j) {

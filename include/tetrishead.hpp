@@ -23,24 +23,24 @@
 typedef std::vector<std::vector<chtype>> Field;
 typedef std::pair<unsigned, unsigned short> Rpair;
 
-const std::string HOME{getenv("HOME")};
-const std::string record_table{HOME + "/.tetris_record_table.txt"};
+const std::string HOME {getenv("HOME")};
+const std::string record_table {HOME + "/.tetris_record_table.txt"};
 
-const unsigned SIZE_Y{20};
-const unsigned SIZE_X{10};
+const unsigned SIZE_Y {20};
+const unsigned SIZE_X {10};
 
-const unsigned BEGIN_TIME_DOWN{800};
-const unsigned LINES_TO_NEW_LEVEL{8};
+const unsigned BEGIN_TIME_DOWN {800};
+const unsigned LINES_TO_NEW_LEVEL {8};
 
-const unsigned SIZE_LIST_RECORDS{10};
+const unsigned SIZE_LIST_RECORDS {10};
 
-const int ESC{033};
-const int ENTER{012};
-const int PAUSE{' '};
+const int ESC {033};
+const int ENTER {012};
+const int PAUSE {' '};
 
-enum Cell{DEFAULT_CELL, FRAME_CELL, FREE_CELL, BRICK_R_CELL, BRICK_G_CELL, BRICK_Y_CELL, BRICK_B_CELL, BRICK_C_CELL, BRICK_M_CELL};
+enum Cell {DEFAULT_CELL, FRAME_CELL, FREE_CELL, BRICK_R_CELL, BRICK_G_CELL, BRICK_Y_CELL, BRICK_B_CELL, BRICK_C_CELL, BRICK_M_CELL};
 
-enum Direction{RIGHT, DOWN, LEFT, UP};
+enum Direction {RIGHT, DOWN, LEFT, UP};
 Direction &operator++(Direction &, int);
 
 const chtype DEF_VALUE{' ' | COLOR_PAIR(FREE_CELL)};
@@ -57,7 +57,7 @@ class Gamer {
         std::string name_;
         Rpair rezult_;
     public:
-        Gamer(std::string = "default", Rpair = Rpair{0, 0});
+        Gamer (std::string = "default", Rpair = Rpair{0, 0});
         ~Gamer();
         bool operator<(const Rpair &) const;
         friend void show_record_table();
@@ -74,7 +74,7 @@ class Koords {
         static const unsigned PAS_SIDE{2};
         static const unsigned PAS_FRWD{1};
     public:
-        explicit Koords(short = 0, short = 0);
+        explicit Koords (short = 0, short = 0);
         Koords(const Koords &);
         auto getY() const -> decltype(y_);
         auto getX() const -> decltype(x_);
@@ -90,14 +90,14 @@ class Koords {
         Koords &to_index();
 };
 
-const Koords BEG_SCR{0, 0};
-const Koords END_SCR{BEG_SCR + Koords{SIZE_Y + 1, SIZE_X * 2 + 1}};
-const Koords IN_POSITION{BEG_SCR + Koords{0, SIZE_X + 1}};
-const Koords DEF_CENTRUM{0, 1};
-const Koords SHOW_POSITION{Koords{END_SCR + Koords(- END_SCR.getY() + 3, 10)}};
-const Koords SCORE{SHOW_POSITION + Koords{3, - 4}};
-const Koords END_GAME_MESAGE{Koords{BEG_SCR + Koords(SIZE_Y / 2, SIZE_X - 5)}};
-const Koords BUFFER_PLACE{3, 0};
+const Koords BEG_SCR {0, 0};
+const Koords END_SCR {BEG_SCR + Koords{SIZE_Y + 1, SIZE_X * 2 + 1}};
+const Koords IN_POSITION {BEG_SCR + Koords{0, SIZE_X + 1}};
+const Koords DEF_CENTRUM {0, 1};
+const Koords SHOW_POSITION {Koords{END_SCR + Koords(- END_SCR.getY() + 3, 10)}};
+const Koords SCORE {SHOW_POSITION + Koords{3, - 4}};
+const Koords END_GAME_MESAGE {Koords{BEG_SCR + Koords(SIZE_Y / 2, SIZE_X - 5)}};
+const Koords BUFFER_PLACE {3, 0};
 
 class Brick {
     private:
@@ -112,7 +112,7 @@ class Brick {
         Koords center_;
         chtype block_;
     public:
-        Brick();
+        Brick ();
         ~Brick();
         const Brick &show(chtype = BLOCKS[0]) const;
         Brick &rotade(Field &);
@@ -137,14 +137,14 @@ class Tetris {
         unsigned short level_;
         unsigned short lines_;
     public:
-        Tetris();
+        Tetris ();
         ~Tetris();
         Rpair game();
     private:
         void frame() const;
         void print_screen() const;
         void print_level() const;
-        void intake();
+        void intake();//throws an exception!!!
         unsigned short delete_all_solutions();
 };
 

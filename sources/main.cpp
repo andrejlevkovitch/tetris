@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
 
     do {
         clear();
-        Tetris game{};
+        Tetris game;
         save_rezult(game.game());
         move(0, 0);
         printw("Do you want play again? (y/n)\n");

@@ -10,13 +10,13 @@
 
 Direction &operator++(Direction &dir, int)
 {
-    auto a{static_cast<int>(dir)};
-    return dir = (++a > 3) ? RIGHT : static_cast<Direction>(a);
+    auto a {static_cast<int>(dir)};
+    return dir = (++a > 3) ? RIGHT : static_cast<Direction> (a);
 }
 
 void show_record_table()
 {
-    std::list<Gamer> gamerList{SIZE_LIST_RECORDS};
+    std::list<Gamer> gamerList {SIZE_LIST_RECORDS};
     read_from_file(gamerList);
     mvprintw (5, 0, "Record table\n");
     for (const auto &i : gamerList) {

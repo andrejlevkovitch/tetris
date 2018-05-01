@@ -8,9 +8,9 @@
 #include<cstdlib>
 #include<ctime>
 
-Brick::Brick() : direction_{RIGHT}, position_{SHOW_POSITION}, center_{DEF_CENTRUM}
+Brick::Brick () : direction_ {RIGHT}, position_ {SHOW_POSITION}, center_ {DEF_CENTRUM}
 {
-    BrickType figure{};
+    BrickType figure;
     {
         srand(time(NULL));
         figure = static_cast<BrickType>(rand() % N_BRICK_KIND);
@@ -21,29 +21,29 @@ Brick::Brick() : direction_{RIGHT}, position_{SHOW_POSITION}, center_{DEF_CENTRU
     }
     switch(figure) {
         case BRICK_I:
-            field_.resize(1, decltype(field_)::value_type(4, block_));
+            field_.resize(1, decltype(field_)::value_type (4, block_));
             break;
         case BRICK_J:
-            field_.resize(2, decltype(field_)::value_type(3, block_));
+            field_.resize(2, decltype(field_)::value_type (3, block_));
             field_[1][0] = field_[1][1] = DEF_VALUE;
             break;
         case BRICK_L:
-            field_.resize(2, decltype(field_)::value_type(3, block_));
+            field_.resize(2, decltype(field_)::value_type (3, block_));
             field_[1][1] = field_[1][2] = DEF_VALUE;
             break;
         case BRICK_O:
-            field_.resize(2, decltype(field_)::value_type(2, block_));
+            field_.resize(2, decltype(field_)::value_type (2, block_));
             break;
         case BRICK_S:
             field_.resize(2, decltype(field_)::value_type (3, block_));
             field_[0][0] = field_[1][2] = DEF_VALUE;
             break;
         case BRICK_T:
-            field_.resize(2, decltype(field_)::value_type(3, block_));
+            field_.resize(2, decltype(field_)::value_type (3, block_));
             field_[0][0] = field_[0][2] = DEF_VALUE;
             break;
         case BRICK_Z:
-            field_.resize(2, decltype(field_)::value_type(3, block_));
+            field_.resize(2, decltype(field_)::value_type (3, block_));
             field_[0][2] = field_[1][0] = DEF_VALUE;
             break;
         default:
@@ -51,7 +51,7 @@ Brick::Brick() : direction_{RIGHT}, position_{SHOW_POSITION}, center_{DEF_CENTRU
     }
     {
         auto count_of_rotedes{rand() % 4};
-        for (int i{}; i < count_of_rotedes; ++i) {
+        for (int i {}; i < count_of_rotedes; ++i) {
             rotor();
         }
     }
@@ -71,8 +71,8 @@ Brick::~Brick()
 
 const Brick &Brick::show(chtype block) const
 {
-    Koords stat{sides().first};
-    Koords temp{stat};
+    Koords stat {sides().first};
+    Koords temp {stat};
     if (block == BLOCKS[0]) {
         block = block_;
     }
@@ -95,10 +95,10 @@ const Brick &Brick::show(chtype block) const
 
 bool Brick::is_pasible(Field &out) const
 {
-    auto temp{sides().first};
+    auto temp {sides().first};
     temp.to_index();
-    for (int i{}, l = temp.getY(); i < field_.size(); ++i, ++l) {
-        for (int j{}, m = temp.getX(); j < field_[i].size(); ++j, ++m) {
+    for (int i {}, l = temp.getY(); i < field_.size(); ++i, ++l) {
+        for (int j {}, m = temp.getX(); j < field_[i].size(); ++j, ++m) {
             if (l >= 0 && m >= 0 && field_[i][j] != DEF_VALUE && out[l][m] != DEF_VALUE) {
                 return false;
             }
@@ -114,15 +114,15 @@ Brick &Brick::rotade(Field &out)
     }
     show(DEF_VALUE);
     {
-        auto spare{position_};
+        auto spare {position_};
         rotor();
-        int counter{};
+        int counter {};
         bool need_cikle = false;
         do {
-            while (!(sides().first > Koords{BEG_SCR - BUFFER_PLACE})) {
+            while (!(sides().first > Koords {BEG_SCR - BUFFER_PLACE})) {
                 position_.move_right();
             }
-            while (!(sides().second < Koords{END_SCR + BUFFER_PLACE})) {
+            while (!(sides().second < Koords {END_SCR + BUFFER_PLACE})) {
                 position_.move_left();
             }
             while (!(sides().second < END_SCR)) {
@@ -141,7 +141,7 @@ Brick &Brick::rotade(Field &out)
                         break;
                     default:
                         need_cikle = false;
-                        for (int i{}; i < 3; ++i) {
+                        for (int i {}; i < 3; ++i) {
                             rotor();
                         }
                         break;
@@ -158,9 +158,9 @@ Brick &Brick::rotade(Field &out)
 
 bool Brick::down(Field &out)
 {
-    bool returnVal{false};
+    bool returnVal {false};
     show(DEF_VALUE);
-    auto spare{position_};
+    auto spare {position_};
     position_.move_down();
     if (sides().second < END_SCR && is_pasible(out)) {
     }
@@ -175,7 +175,7 @@ bool Brick::down(Field &out)
 void Brick::right(Field &out)
 {
     show(DEF_VALUE);
-    auto spare{position_};
+    auto spare {position_};
     position_.move_right();
     if (sides().second < END_SCR && is_pasible(out)) {
     }
@@ -189,9 +189,9 @@ void Brick::right(Field &out)
 void Brick::left(Field &out)
 {
     show(DEF_VALUE);
-    auto spare{position_};
+    auto spare {position_};
     position_.move_left();
-    if (sides().first > Koords{BEG_SCR - BUFFER_PLACE} && is_pasible(out)) {
+    if (sides().first > Koords {BEG_SCR - BUFFER_PLACE} && is_pasible(out)) {
     }
     else {
         position_ = spare;
@@ -202,9 +202,9 @@ void Brick::left(Field &out)
 
 std::pair<Koords, Koords> Brick::sides() const
 {
-    Koords a{position_ - Koords{center_ + Koords{0, center_.getX()}}};
-    Koords b{a + Koords(field_.size() - 1, field_[0].size() * 2 - 1)};
-    return std::pair<Koords, Koords>(a, b);
+    Koords a {position_ - Koords {center_ + Koords {0, center_.getX()}}};
+    Koords b {a + Koords (field_.size() - 1, field_[0].size() * 2 - 1)};
+    return std::pair<Koords, Koords> (a, b);
 }
 
 const Koords &Brick::get_koords() const
@@ -214,14 +214,14 @@ const Koords &Brick::get_koords() const
 
 Brick &Brick::rotor()
 {
-    Field temp(field_[0].size(), Field::value_type(field_.size(), DEF_VALUE));
-    bool no_uptade_center{true};
-    for (int i{}; i < field_.size(); ++i) {
-        for (int j{}; j < field_[i].size(); ++j) {
+    Field temp(field_[0].size(), Field::value_type (field_.size(), DEF_VALUE));
+    bool no_uptade_center {true};
+    for (int i {}; i < field_.size(); ++i) {
+        for (int j {}; j < field_[i].size(); ++j) {
             int n = field_.size() - i - 1;
             temp[j][n] = field_[i][j];
-            if (center_ == Koords(i, j) && no_uptade_center) {
-                center_ = Koords(j, n);
+            if (center_ == Koords (i, j) && no_uptade_center) {
+                center_ = Koords (j, n);
                 no_uptade_center = false;
             }
         }

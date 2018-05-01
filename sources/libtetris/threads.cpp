@@ -24,9 +24,9 @@ int input()
 
 void endless(const bool &exitParametr, int &defoltMotion, unsigned short &level)
 {
-    bool to_exit{};
-    unsigned short time{BEGIN_TIME_DOWN};
-    unsigned short copy_level{};
+    bool to_exit {};
+    unsigned short time {BEGIN_TIME_DOWN};
+    unsigned short copy_level {};
     do {
         std::this_thread::sleep_for(std::chrono::milliseconds(time));
         threadMutex.lock();

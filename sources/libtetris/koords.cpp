@@ -3,7 +3,7 @@
 #include"../../include/tetrishead.hpp"
 #include<cstdbool>
 
-Koords::Koords(short y, short x) : y_(y), x_(x)
+Koords::Koords (short y, short x) : y_(y), x_(x)
 {
 }
 
@@ -63,19 +63,19 @@ Koords &Koords::move_down()
 
 Koords &Koords::to_index()
 {
-    *this = *this - BEG_SCR - Koords{1, 1};
-    *this = Koords(y_, x_ / 2);
+    *this = *this - BEG_SCR - Koords {1, 1};
+    *this = Koords (y_, x_ / 2);
     return *this;
 }
 
 Koords Koords::operator-(const Koords &right) const
 {
-    return Koords(y_ - right.y_, x_ - right.x_);
+    return Koords (y_ - right.y_, x_ - right.x_);
 }
 
 Koords Koords::operator+(const Koords &right) const
 {
-    return Koords(y_ + right.y_, x_ + right.x_);
+    return Koords (y_ + right.y_, x_ + right.x_);
 }
 
 bool Koords::operator==(const Koords &right) const

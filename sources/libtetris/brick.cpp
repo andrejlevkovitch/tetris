@@ -16,61 +16,39 @@ Brick::Brick() : direction_{RIGHT}, position_{SHOW_POSITION}, center_{DEF_CENTRU
         figure = static_cast<BrickType>(rand() % N_BRICK_KIND);
         name_ = figure;
     }
-
     {
         block_ = BLOCKS[rand() % BLOCKS.size()];
     }
     switch(figure) {
         case BRICK_I:
-            field_.resize(1, decltype(field_)::value_type(4, DEF_VALUE));
-            for (int i{}; i < field_[0].size(); ++i) {
-                field_[0][i] = block_;
-            }
+            field_.resize(1, decltype(field_)::value_type(4, block_));
             break;
         case BRICK_J:
-            field_.resize(2, decltype(field_)::value_type(3, DEF_VALUE));
-            field_[1][2] = block_;
-            for (int i{}; i < field_[0].size(); ++i) {
-                field_[0][i] = block_;
-            }
+            field_.resize(2, decltype(field_)::value_type(3, block_));
+            field_[1][0] = field_[1][1] = DEF_VALUE;
             break;
         case BRICK_L:
-            field_.resize(2, decltype(field_)::value_type(3, DEF_VALUE));
-            field_[1][0] = block_;
-            for (int i{}; i < field_[0].size(); ++i) {
-                field_[0][i] = block_;
-            }
+            field_.resize(2, decltype(field_)::value_type(3, block_));
+            field_[1][1] = field_[1][2] = DEF_VALUE;
             break;
         case BRICK_O:
             field_.resize(2, decltype(field_)::value_type(2, block_));
             break;
         case BRICK_S:
-            field_.resize(2, decltype(field_)::value_type (3, DEF_VALUE));
-            for (int i{}; i < field_.size(); ++i) {
-                for (int j{1 - i}; j + i < field_[i].size(); ++j) {
-                    field_[i][j] = block_;
-                }
-            }
+            field_.resize(2, decltype(field_)::value_type (3, block_));
+            field_[0][0] = field_[1][2] = DEF_VALUE;
             break;
         case BRICK_T:
-            field_.resize(2, decltype(field_)::value_type(3, DEF_VALUE));
-            field_[0][1] = block_;
-            for (int i{}; i < field_[1].size(); ++i) {
-                field_[1][i] = block_;
-            }
+            field_.resize(2, decltype(field_)::value_type(3, block_));
+            field_[0][0] = field_[0][2] = DEF_VALUE;
             break;
         case BRICK_Z:
-            field_.resize(2, decltype(field_)::value_type(3, DEF_VALUE));
-            for (int i{}; i < field_.size(); ++i) {
-                for (int j{i}; j - i < field_[i].size() - 1; ++j) {
-                    field_[i][j] = block_;
-                }
-            }
+            field_.resize(2, decltype(field_)::value_type(3, block_));
+            field_[0][2] = field_[1][0] = DEF_VALUE;
             break;
         default:
             break;
     }
-
     {
         auto count_of_rotedes{rand() % 4};
         for (int i{}; i < count_of_rotedes; ++i) {
@@ -236,7 +214,7 @@ const Koords &Brick::get_koords() const
 
 Brick &Brick::rotor()
 {
-    Field temp(field_[0].size(), decltype(field_)::value_type(field_.size(), DEF_VALUE));
+    Field temp(field_[0].size(), Field::value_type(field_.size(), DEF_VALUE));
     bool no_uptade_center{true};
     for (int i{}; i < field_.size(); ++i) {
         for (int j{}; j < field_[i].size(); ++j) {

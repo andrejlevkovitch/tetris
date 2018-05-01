@@ -9,15 +9,10 @@
 #include<mutex>
 #include<thread>
 
-Tetris::Tetris() : score_{}, level_{}, lines_{}
+Tetris::Tetris() : currentBrick_{}, score_{}, level_{}, lines_{}
 {
     screen_.resize(SIZE_Y, decltype(screen_)::value_type(SIZE_X, DEF_VALUE));
-    {
-        {
-            Brick temp = currentBrick_;
-        }
-        currentBrick_ = Brick{};
-    }
+    Brick temp = currentBrick_;
 }
 
 Tetris::~Tetris()
@@ -104,15 +99,19 @@ Rpair Tetris::game()
                 threadMutex.unlock();
             } while (!ch);
             switch (ch) {
+                case 'k':
                 case KEY_UP:
                     currentBrick_.rotade(screen_);
                     break;
+                case 'j':
                 case KEY_DOWN:
                     needNewBreek = currentBrick_.down(screen_);
                     break;
+                case 'h':
                 case KEY_LEFT:
                     currentBrick_.left(screen_);
                     break;
+                case 'l':
                 case KEY_RIGHT:
                     currentBrick_.right(screen_);
                     break;
@@ -134,7 +133,10 @@ Rpair Tetris::game()
                     break;
             }
             if (needNewBreek) {
-                if (!intake()) {
+                try {
+                    intake();
+                }
+                catch (const char *){
                     endGame = true;
                     ch = ESC;
                 }
@@ -216,7 +218,7 @@ unsigned short Tetris::delete_all_solutions()
     return rezult;
 }
 
-bool Tetris::intake()
+void Tetris::intake()
 {
     auto temp{currentBrick_.sides().first};
     if (temp > BEG_SCR) {
@@ -229,9 +231,9 @@ bool Tetris::intake()
                 }
             }
         }
-        return true;
+        return;
     }
     else {
-        return false;
+        throw "impassible, game over";
     }
 }

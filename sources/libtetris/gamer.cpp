@@ -14,6 +14,10 @@ Gamer::Gamer(std::string name, Rpair rezult) : name_(name), rezult_(rezult)
 {
 }
 
+Gamer::~Gamer()
+{
+}
+
 bool Gamer::operator<(const Rpair &right) const
 {
     return rezult_ < right;

@@ -58,6 +58,7 @@ class Gamer {
         Rpair rezult_;
     public:
         Gamer(std::string = "default", Rpair = Rpair{0, 0});
+        ~Gamer();
         bool operator<(const Rpair &) const;
         friend void show_record_table();
         friend std::ifstream &operator>>(std::ifstream &, Gamer &);
@@ -143,7 +144,7 @@ class Tetris {
         void frame() const;
         void print_screen() const;
         void print_level() const;
-        bool intake();
+        void intake();
         unsigned short delete_all_solutions();
 };
 

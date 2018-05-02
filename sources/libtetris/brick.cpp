@@ -5,19 +5,20 @@
 #include<curses.h>
 #include<tuple>
 #include<cstdbool>
-#include<cstdlib>
-#include<ctime>
+#include<random>
 
 Brick::Brick () : direction_ {RIGHT}, position_ {SHOW_POSITION}, center_ {DEF_CENTRUM}
 {
     BrickType figure;
+    std::random_device rd;
     {
-        srand(time(NULL));
-        figure = static_cast<BrickType>(rand() % N_BRICK_KIND);
+        std::uniform_int_distribution<int> dist(0, N_BRICK_KIND - 1);
+        figure = static_cast<BrickType>(dist(rd));
         name_ = figure;
     }
     {
-        block_ = BLOCKS[rand() % BLOCKS.size()];
+        std::uniform_int_distribution<int> dist(0, BLOCKS.size() - 1);
+        block_ = BLOCKS[dist(rd)];
     }
     switch(figure) {
         case BRICK_I:
@@ -50,7 +51,8 @@ Brick::Brick () : direction_ {RIGHT}, position_ {SHOW_POSITION}, center_ {DEF_CE
             break;
     }
     {
-        auto count_of_rotedes{rand() % 4};
+        std::uniform_int_distribution<int> dist (0, 3);
+        auto count_of_rotedes{dist(rd)};
         for (int i {}; i < count_of_rotedes; ++i) {
             rotor();
         }

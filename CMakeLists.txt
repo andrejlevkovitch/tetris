@@ -9,7 +9,7 @@ set(LIBRARY_TETRIS "tet")
 file(GLOB SRC_TETRIS "sources/libtetris/*.cpp")
 
 set(CMAKE_CXX_COMPILER clang++)
-add_definitions(-Wall -std=c++14)
+add_definitions(-Wall -std=c++14 -g)
 
 include_directories(include)
 

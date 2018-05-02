@@ -3,11 +3,10 @@
 #include"../../include/tetrishead.hpp"
 #include<curses.h>
 
-int init_colors(void)
+void init_colors(void)
 {
-    if (!has_colors())
-    {
-        return FALSE;
+    if (!has_colors()) {
+        throw "Colors are not supported!";
     }
     start_color();
 
@@ -20,5 +19,5 @@ int init_colors(void)
     init_pair(BRICK_C_CELL, COLOR_CYAN, COLOR_CYAN);
     init_pair(BRICK_B_CELL, COLOR_BLUE, COLOR_BLUE);
 
-    return TRUE;
+    return;
 }

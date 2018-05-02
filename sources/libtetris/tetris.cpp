@@ -29,7 +29,7 @@ void Tetris::frame() const
         addch(ACS_HLINE);
     }
     addch(ACS_URCORNER);
-    Koords other_side{temp + Koords{0, SIZE_X * 2 + 1}};
+    Koords other_side {temp + Koords {0, SIZE_X * 2 + 1}};
     for (int i {}; i < screen_.size(); ++i) {
         move_add(temp.move_down(), ACS_VLINE);
         move_add(other_side.move_down(), ACS_VLINE);
@@ -80,7 +80,6 @@ Rpair Tetris::game()
     bool endGame {false};
     bool forcedEnd {false};
     int defoltAct {0};
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     auto newThreed = std::async(std::launch::async, [&] {endless(forcedEnd, defoltAct, level_);});
     do {
         currentBrick_.show();
@@ -198,21 +197,21 @@ Rpair Tetris::game()
 unsigned short Tetris::delete_all_solutions()
 {
     unsigned short rezult {};
-    for (int i {}; i < screen_.size(); ++i) {
+    for (auto i {screen_.begin()}; i != screen_.end(); ++i) {
         int counter {};
-        for (int j {}; j < screen_[i].size(); ++ j) {
-            if (screen_[i][j] == DEF_VALUE) {
+        for (auto j {i->begin()}; j != i->end(); ++ j) {
+            if (*j == DEF_VALUE) {
                 break;
             }
             else {
                 counter++;
             }
         }
-        if (counter == screen_[i].size()) {
+        if (counter == i->size()) {
             ++lines_;
             ++rezult;
-            screen_.erase(screen_.begin() + i);
-            screen_.insert(screen_.begin(), decltype(screen_)::value_type (screen_[i].size(), DEF_VALUE));
+            screen_.erase(i);
+            screen_.insert(screen_.begin(), decltype(screen_)::value_type (i->size(), DEF_VALUE));
         }
     }
     return rezult;

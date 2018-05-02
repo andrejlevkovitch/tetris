@@ -11,9 +11,13 @@ int main(int argc, char *argv[])
     keypad(stdscr, TRUE);
     noecho();
 
-    if (!init_colors()) {
-        std::cout << "Colors are not supported!\n";
-        return 1;
+    try {
+        init_colors();
+    }
+    catch (const char *error) {
+        endwin();
+        std::cerr << error << std::endl;
+        std::exit(1);
     }
 
     do {

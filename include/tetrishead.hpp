@@ -17,6 +17,7 @@
 #include<tuple>
 #include<mutex>
 #include<fstream>
+#include<chrono>
 
 #define MAX_LEN_NAME 10
 
@@ -24,12 +25,12 @@ typedef std::vector<std::vector<chtype>> Field;
 typedef std::pair<unsigned, unsigned short> Rpair;
 
 const std::string HOME {getenv("HOME")};
-const std::string record_table {HOME + "/.tetris_record_table.txt"};
+const std::string RECORD_TABLE {HOME + "/.tetris_record_table.txt"};
 
 const unsigned SIZE_Y {20};
 const unsigned SIZE_X {10};
 
-const unsigned BEGIN_TIME_DOWN {800};
+const std::chrono::milliseconds BEGIN_TIME_DOWN {800};
 const unsigned LINES_TO_NEW_LEVEL {8};
 
 const unsigned SIZE_LIST_RECORDS {10};
@@ -154,7 +155,6 @@ void init_colors(void);//throws an exception!!!
 int input();
 void endless(const bool &, int &, unsigned short &);
 void save_rezult(const Rpair &);
-bool operator<(Rpair &, Rpair &);
 void read_from_file(std::list<Gamer> &);
 void save_in_file(std::list<Gamer> &);
 void show_record_table();

@@ -206,7 +206,7 @@ std::pair<Koords, Koords> Brick::sides() const
 {
     Koords a {position_ - Koords {center_ + Koords {0, center_.getX()}}};
     Koords b {a + Koords (field_.size() - 1, field_[0].size() * 2 - 1)};
-    return std::pair<Koords, Koords> (a, b);
+    return std::make_pair(std::move(a), std::move(b));
 }
 
 const Koords &Brick::get_koords() const

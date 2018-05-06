@@ -18,10 +18,12 @@
 #include<mutex>
 #include<fstream>
 #include<chrono>
+#include<deque>
 
 #define MAX_LEN_NAME 10
 
 typedef std::vector<std::vector<chtype>> Field;
+typedef std::deque<std::vector<chtype>> TetrisScreen;
 typedef std::pair<unsigned, unsigned short> Rpair;
 
 const std::string HOME {getenv("HOME")};
@@ -116,23 +118,23 @@ class Brick {
         Brick ();
         ~Brick();
         const Brick &show(chtype = BLOCKS[0]) const;
-        Brick &rotade(Field &);
-        bool down(Field &);
-        void left(Field &);
-        void right(Field &);
+        Brick &rotade(TetrisScreen &);
+        bool down(TetrisScreen &);
+        void left(TetrisScreen &);
+        void right(TetrisScreen &);
         const Koords &get_koords() const;
         std::pair<Koords, Koords> sides() const;
         Field get_block() const;
     private:
         Brick &rotor();
-        bool is_pasible(Field &) const;
+        bool is_pasible(TetrisScreen &) const;
 };
 
 class Tetris {
     private:
         enum Score{ONE = 100, TWO = 300, TRI = 700, TET = 1500};
     private:
-        Field screen_;
+        TetrisScreen screen_;
         Brick currentBrick_;
         unsigned score_;
         unsigned short level_;

@@ -197,21 +197,21 @@ Rpair Tetris::game()
 unsigned short Tetris::delete_all_solutions()
 {
     unsigned short rezult {};
-    for (auto i {screen_.begin()}; i != screen_.end(); ++i) {
+    for (int i {}; i < screen_.size(); ++i) {
         int counter {};
-        for (auto j {i->begin()}; j != i->end(); ++ j) {
-            if (*j == DEF_VALUE) {
+        for (int j {}; j < screen_[i].size(); ++j) {
+            if (screen_[i][j] == DEF_VALUE) {
                 break;
             }
             else {
                 counter++;
             }
         }
-        if (counter == i->size()) {
+        if (counter == screen_[i].size()) {
             ++lines_;
             ++rezult;
-            screen_.erase(i);
-            screen_.insert(screen_.begin(), decltype(screen_)::value_type (i->size(), DEF_VALUE));
+            screen_.erase(screen_.begin() + i);
+            screen_.push_front(decltype(screen_)::value_type (screen_[i].size(), DEF_VALUE));
         }
     }
     return rezult;

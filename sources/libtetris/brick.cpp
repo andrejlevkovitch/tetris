@@ -95,7 +95,7 @@ const Brick &Brick::show(chtype block) const
     return *this;
 }
 
-bool Brick::is_pasible(Field &out) const
+bool Brick::is_pasible(TetrisScreen &out) const
 {
     auto temp {sides().first};
     temp.to_index();
@@ -109,7 +109,7 @@ bool Brick::is_pasible(Field &out) const
     return true;
 }
 
-Brick &Brick::rotade(Field &out)
+Brick &Brick::rotade(TetrisScreen &out)
 {
     if (name_ == BRICK_O) {
         return *this;
@@ -158,7 +158,7 @@ Brick &Brick::rotade(Field &out)
     return *this;
 }
 
-bool Brick::down(Field &out)
+bool Brick::down(TetrisScreen &out)
 {
     bool returnVal {false};
     show(DEF_VALUE);
@@ -174,7 +174,7 @@ bool Brick::down(Field &out)
     return returnVal;
 }
 
-void Brick::right(Field &out)
+void Brick::right(TetrisScreen &out)
 {
     show(DEF_VALUE);
     auto spare {position_};
@@ -188,7 +188,7 @@ void Brick::right(Field &out)
     return;
 }
 
-void Brick::left(Field &out)
+void Brick::left(TetrisScreen &out)
 {
     show(DEF_VALUE);
     auto spare {position_};

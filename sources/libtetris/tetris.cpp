@@ -6,8 +6,8 @@
 #include<cstdbool>
 #include<tuple>
 #include<future>
-#include<mutex>
 #include<thread>
+#include<atomic>
 
 Tetris::Tetris () : currentBrick_{}, score_{}, level_{}, lines_{}
 {
@@ -76,26 +76,24 @@ Rpair Tetris::game()
     frame();
     print_screen();
     print_level();
-    int ch{};
+    int ch {};
     bool endGame {false};
-    bool forcedEnd {false};
-    int defoltAct {0};
-    auto newThreed = std::async(std::launch::async, [&] {endless(forcedEnd, defoltAct, level_);});
+    std::atomic<bool> forcedEnd {false};
+    std::atomic<int> defoltAct {};
+    std::atomic<int> lvl {};
+    auto newThreed = std::async(std::launch::async, [&] {endless(forcedEnd, defoltAct, lvl);});
     do {
         currentBrick_.show();
         Brick next;
         bool needNewBreek {false};
         do {
             do {
-                threadMutex.lock();
-                if (!defoltAct) {
+                if (!(ch = defoltAct.load())) {
                     ch = input();
                 }
                 else {
-                    ch = defoltAct;
-                    defoltAct = 0;
+                    defoltAct.store(0);
                 }
-                threadMutex.unlock();
             } while (!ch);
             switch (ch) {
                 case 'k':
@@ -118,10 +116,7 @@ Rpair Tetris::game()
                     move_at(END_GAME_MESAGE);
                     printw("...PAUSE...");
                     refresh();
-                    ch = 0;
-                    while (!(ch = input())) {
-                        continue;
-                    }
+                    getch();
                     print_screen();
                     currentBrick_.show();
                     break;
@@ -143,9 +138,7 @@ Rpair Tetris::game()
             }
         } while (ch != ESC);
         if (ch == ESC) {
-            threadMutex.lock();
-            forcedEnd = true;
-            threadMutex.unlock();
+            forcedEnd.store(true);
             if (endGame) {
                 move_at(END_GAME_MESAGE);
                 printw ("YOU LOSE...");
@@ -177,14 +170,11 @@ Rpair Tetris::game()
             if (count) {
                 if (lines_ >= LINES_TO_NEW_LEVEL) {
                     lines_ = 0;
-                    threadMutex.lock();
                     ++level_;
-                    threadMutex.unlock();
+                    lvl.store(level_);
                 }
                 print_screen();
-                threadMutex.lock();
                 print_level();
-                threadMutex.unlock();
             }
             currentBrick_= next;
         }

@@ -10,6 +10,9 @@ int main(int argc, char *argv[])
     initscr();
     keypad(stdscr, TRUE);
     noecho();
+#ifdef _WIN32
+    leaveok(stdscr, TRUE);
+#endif
 
     try {
         init_colors();

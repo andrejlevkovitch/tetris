@@ -97,18 +97,22 @@ Rpair Tetris::game()
             } while (!ch);
             switch (ch) {
                 case 'k':
+                case 'w':
                 case KEY_UP:
                     currentBrick_.rotade(screen_);
                     break;
                 case 'j':
+                case 's':
                 case KEY_DOWN:
                     needNewBreek = currentBrick_.down(screen_);
                     break;
                 case 'h':
+                case 'a':
                 case KEY_LEFT:
                     currentBrick_.left(screen_);
                     break;
                 case 'l':
+                case 'd':
                 case KEY_RIGHT:
                     currentBrick_.right(screen_);
                     break;

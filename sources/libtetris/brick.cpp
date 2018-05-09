@@ -11,14 +11,19 @@ Brick::Brick () : direction_ {RIGHT}, position_ {SHOW_POSITION}, center_ {DEF_CE
 {
     BrickType figure;
     std::random_device rd;
+#ifdef __linux__
+    std::mt19937 gen(rd());
+#else
+#include<chrono>
+    std::mt19937 gen(std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()));
+#endif
     {
         std::uniform_int_distribution<int> dist(0, N_BRICK_KIND - 1);
-        figure = static_cast<BrickType>(dist(rd));
-        name_ = figure;
+        figure = static_cast<BrickType>(dist(gen));
     }
     {
         std::uniform_int_distribution<int> dist(0, BLOCKS.size() - 1);
-        block_ = BLOCKS[dist(rd)];
+        block_ = BLOCKS[dist(gen)];
     }
     switch(figure) {
         case BRICK_I:
@@ -52,7 +57,7 @@ Brick::Brick () : direction_ {RIGHT}, position_ {SHOW_POSITION}, center_ {DEF_CE
     }
     {
         std::uniform_int_distribution<int> dist (0, 3);
-        auto count_of_rotedes{dist(rd)};
+        auto count_of_rotedes{dist(gen)};
         for (int i {}; i < count_of_rotedes; ++i) {
             rotor();
         }

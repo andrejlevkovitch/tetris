@@ -11,7 +11,6 @@ int input()
     wtimeout(curscr, 100);
     int in = wgetch(curscr);
     if (in == ESC) {
-        wtimeout(curscr, 1);
         int a = wgetch(curscr);
         if (a != ERR) {
             int b = wgetch(curscr);
@@ -37,7 +36,7 @@ int input()
         }
     }
     wtimeout(curscr, - 1);
-    return in;
+    return (in == ERR) ? 0 : in;
 }
 
 void endless(const std::atomic<bool> &exitParametr, std::atomic<int> &defoltMotion, std::atomic<int> &level)

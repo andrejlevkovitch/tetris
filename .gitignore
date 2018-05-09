@@ -5,3 +5,4 @@ tetris
 CMakeFiles/
 *.so
 install_manifest.txt
+*.exe

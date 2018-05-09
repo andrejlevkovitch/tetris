@@ -26,7 +26,11 @@ typedef std::vector<std::vector<chtype>> Field;
 typedef std::deque<std::vector<chtype>> TetrisScreen;
 typedef std::pair<unsigned, unsigned short> Rpair;
 
+#ifdef __linux__
 const std::string HOME {getenv("HOME")};
+#else
+const std::string HOME {getenv("LOCALAPPDATA")};
+#endif
 const std::string RECORD_TABLE {HOME + "/.tetris_record_table.txt"};
 
 const unsigned SIZE_Y {20};

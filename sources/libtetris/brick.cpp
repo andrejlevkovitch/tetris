@@ -9,7 +9,6 @@
 
 Brick::Brick () : direction_ {RIGHT}, position_ {SHOW_POSITION}, center_ {DEF_CENTRUM}
 {
-    BrickType figure;
     std::random_device rd;
 #ifdef __linux__
     std::mt19937 gen(rd());
@@ -19,13 +18,13 @@ Brick::Brick () : direction_ {RIGHT}, position_ {SHOW_POSITION}, center_ {DEF_CE
 #endif
     {
         std::uniform_int_distribution<int> dist(0, N_BRICK_KIND - 1);
-        figure = static_cast<BrickType>(dist(gen));
+        name_ = static_cast<BrickType>(dist(gen));
     }
     {
         std::uniform_int_distribution<int> dist(0, BLOCKS.size() - 1);
         block_ = BLOCKS[dist(gen)];
     }
-    switch(figure) {
+    switch(name_) {
         case BRICK_I:
             field_.resize(1, decltype(field_)::value_type (4, block_));
             break;

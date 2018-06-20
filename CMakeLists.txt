@@ -4,16 +4,12 @@ cmake_minimum_required(VERSION 3.5)
 
 if(${UNIX})
     message(STATUS "UNIX system")
-elseif(${WIN32})
-    message(STATUS "WIN32 system")
 else()
-    message(WARNING "The system is not supported")
+    message(FATAL_ERROR "The system is not supported")
 endif()
 
 option(set_clang "set clang default compiler and linker" 0)
 option(cros_compile "cros compile for win32" 0)
-
-add_definitions(-Wall -std=c++14)
 
 if(set_clang)
     set(CMAKE_CXX_COMPILER clang++)
@@ -22,6 +18,8 @@ if(cros_compile)
     set(CMAKE_CXX_COMPILER i686-w64-mingw32-g++-posix)
     set(CMAKE_CXX_FLAGS "-static-libstdc++ -static-libgcc")
 endif()
+
+add_definitions(-Wall -std=c++14)
 
 message(STATUS "CXX_Compiler is " ${CMAKE_CXX_COMPILER})
 message(STATUS "CXX_Compiler's flags are " ${CMAKE_CXX_FLAGS})
@@ -40,10 +38,15 @@ find_package(Threads REQUIRED)
 include_directories(${THREADS_INCLUDE_DIR})
 
 if(cros_compile)
+    find_package(PDCurses REQUIRED)
+    set(CURSES_INCLUDE_DIR ${PDCURSES_INCLUDE_DIR})
+    set(CURSES_LIBRARIES ${PDCURSES_LIBRARIES})
+
     add_executable(${PROJECT_NAME} ${SRC_MAIN} ${SRC_TETRIS})
-    target_link_libraries(${PROJECT_NAME} pdcurses ${CMAKE_THREAD_LIBS_INIT})
+    target_link_libraries(${PROJECT_NAME} ${PDCURSES_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 else()
     find_package(Curses REQUIRED)
+
     include_directories(${CURSES_INCLUDE_DIR})
 
     add_library(${LIBRARY_TETRIS} SHARED ${SRC_TETRIS})

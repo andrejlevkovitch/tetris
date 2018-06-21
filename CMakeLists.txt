@@ -2,6 +2,8 @@
 
 cmake_minimum_required(VERSION 3.5)
 
+project(tetris)
+
 if(${UNIX})
     message(STATUS "UNIX system")
 else()
@@ -15,6 +17,7 @@ if(set_clang)
     set(CMAKE_CXX_COMPILER clang++)
 endif()
 if(cros_compile)
+    set(PROJECT_NAME ${PROJECT_NAME}.exe)
     set(CMAKE_CXX_COMPILER i686-w64-mingw32-g++-posix)
     set(CMAKE_CXX_FLAGS "-static-libstdc++ -static-libgcc")
 endif()
@@ -24,7 +27,6 @@ add_definitions(-Wall -std=c++14)
 message(STATUS "CXX_Compiler is " ${CMAKE_CXX_COMPILER})
 message(STATUS "CXX_Compiler's flags are " ${CMAKE_CXX_FLAGS})
 
-project(tetris)
 
 message(STATUS "Project name is " ${PROJECT_NAME})
 

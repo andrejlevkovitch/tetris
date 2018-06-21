@@ -7,15 +7,16 @@
 #include<cstdbool>
 #include<random>
 
-Brick::Brick () : direction_ {RIGHT}, position_ {SHOW_POSITION}, center_ {DEF_CENTRUM}
-{
-    std::random_device rd;
 #ifdef __linux__
+    std::random_device rd;
     std::mt19937 gen(rd());
 #else
 #include<chrono>
     std::mt19937 gen(std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()));
 #endif
+
+Brick::Brick () : direction_ {RIGHT}, position_ {SHOW_POSITION}, center_ {DEF_CENTRUM}
+{
     {
         std::uniform_int_distribution<int> dist(0, N_BRICK_KIND - 1);
         name_ = static_cast<BrickType>(dist(gen));

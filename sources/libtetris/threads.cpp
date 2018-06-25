@@ -1,6 +1,6 @@
 //threads.cpp
 
-#include"../../include/tetrishead.hpp"
+#include"tetrishead.hpp"
 #include<curses.h>
 #include<thread>
 #include<chrono>

@@ -1,6 +1,6 @@
 //gamer.cpp
 
-#include"../../include/tetrishead.hpp"
+#include"tetrishead.hpp"
 #include<cctype>
 #include<tuple>
 #include<cstdbool>

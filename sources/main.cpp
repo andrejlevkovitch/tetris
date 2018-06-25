@@ -1,7 +1,7 @@
 //main.cpp
 
 #include<curses.h>
-#include"../include/tetrishead.hpp"
+#include"tetrishead.hpp"
 #include<cctype>
 #include<iostream>
 

@@ -1,6 +1,6 @@
 //cords.cpp
 
-#include"../../include/tetrishead.hpp"
+#include"tetrishead.hpp"
 #include<cstdbool>
 
 Koords::Koords (short y, short x) : y_(y), x_(x)

@@ -1,6 +1,6 @@
 //other_fun.cpp
 
-#include"../../include/tetrishead.hpp"
+#include"tetrishead.hpp"
 #include<fstream>
 #include<tuple>
 #include<curses.h>

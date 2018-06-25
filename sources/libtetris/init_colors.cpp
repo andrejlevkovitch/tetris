@@ -1,6 +1,6 @@
 //init_colors.cpp
 
-#include"../../include/tetrishead.hpp"
+#include"tetrishead.hpp"
 #include<curses.h>
 
 void init_colors(void)

@@ -1,22 +1,22 @@
 //brick.cpp
 
-#include"../../include/tetrishead.hpp"
+#include"tetrishead.hpp"
 #include<vector>
 #include<curses.h>
 #include<tuple>
 #include<cstdbool>
 #include<random>
 
-#ifdef __linux__
-    std::random_device rd;
-    std::mt19937 gen(rd());
-#else
-#include<chrono>
-    std::mt19937 gen(std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()));
-#endif
-
 Brick::Brick () : direction_ {RIGHT}, position_ {SHOW_POSITION}, center_ {DEF_CENTRUM}
 {
+#ifdef __linux__
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+#else
+#include<chrono>
+    static std::mt19937 gen(std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()));
+#endif
+
     {
         std::uniform_int_distribution<int> dist(0, N_BRICK_KIND - 1);
         name_ = static_cast<BrickType>(dist(gen));

@@ -1,6 +1,6 @@
 //tetris.cpp
 
-#include"../../include/tetrishead.hpp"
+#include"tetrishead.hpp"
 #include<curses.h>
 #include<vector>
 #include<cstdbool>

@@ -7,6 +7,7 @@
 #include<cstdbool>
 #include<random>
 
+
 Brick::Brick () : direction_ {RIGHT}, position_ {SHOW_POSITION}, center_ {DEF_CENTRUM}
 {
 #ifdef __linux__

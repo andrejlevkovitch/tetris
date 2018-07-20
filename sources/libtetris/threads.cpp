@@ -2,9 +2,6 @@
 
 #include"tetrishead.hpp"
 #include<curses.h>
-#include<thread>
-#include<chrono>
-#include<atomic>
 
 int input()
 {
@@ -37,18 +34,4 @@ int input()
     }
     wtimeout(curscr, - 1);
     return (in == ERR) ? 0 : in;
-}
-
-void endless(const std::atomic<bool> &exitParametr, std::atomic<int> &defoltMotion, std::atomic<int> &level)
-{
-    std::chrono::milliseconds time {BEGIN_TIME_DOWN};
-    unsigned short copy_level {};
-    do {
-        std::this_thread::sleep_for(std::chrono::milliseconds(time));
-        if (level.load() != copy_level) {
-            copy_level = level.load();
-            time -= time / 10;
-        }
-        defoltMotion.store(KEY_DOWN);
-    } while (!exitParametr.load());
 }

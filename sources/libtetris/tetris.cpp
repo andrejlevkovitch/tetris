@@ -5,9 +5,6 @@
 #include<vector>
 #include<cstdbool>
 #include<tuple>
-#include<future>
-#include<thread>
-#include<atomic>
 
 Tetris::Tetris () : currentBrick_{}, score_{}, level_{}, lines_{}
 {
@@ -78,21 +75,21 @@ Rpair Tetris::game()
     print_level();
     int ch {};
     bool endGame {false};
-    std::atomic<bool> forcedEnd {false};
-    std::atomic<int> defoltAct {};
-    std::atomic<int> lvl {};
-    auto newThreed = std::async(std::launch::async, [&] {endless(forcedEnd, defoltAct, lvl);});
+    auto start = std::chrono::system_clock::now();
+    std::chrono::duration<int, std::milli> time_down{BEGIN_TIME_DOWN};
     do {
         currentBrick_.show();
         Brick next;
         bool needNewBreek {false};
         do {
+            ch = 0;
             do {
-                if (!(ch = defoltAct.load())) {
-                    ch = input();
+                if (((std::chrono::system_clock::now() - start) > time_down)) {
+                    start = std::chrono::system_clock::now();
+                    ch = KEY_DOWN;
                 }
                 else {
-                    defoltAct.store(0);
+                    ch = input();
                 }
             } while (!ch);
             switch (ch) {
@@ -142,7 +139,6 @@ Rpair Tetris::game()
             }
         } while (ch != ESC);
         if (ch == ESC) {
-            forcedEnd.store(true);
             if (endGame) {
                 move_at(END_GAME_MESAGE);
                 printw ("YOU LOSE...");
@@ -175,7 +171,7 @@ Rpair Tetris::game()
                 if (lines_ >= LINES_TO_NEW_LEVEL) {
                     lines_ = 0;
                     ++level_;
-                    lvl.store(level_);
+                    time_down -= time_down / 8;
                 }
                 print_screen();
                 print_level();

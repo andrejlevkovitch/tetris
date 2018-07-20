@@ -27,7 +27,6 @@ add_definitions(-Wall -std=c++14)
 message(STATUS "CXX_Compiler is " ${CMAKE_CXX_COMPILER})
 message(STATUS "CXX_Compiler's flags are " ${CMAKE_CXX_FLAGS})
 
-
 message(STATUS "Project name is " ${PROJECT_NAME})
 
 set(SRC_MAIN sources/main.cpp)
@@ -41,34 +40,29 @@ include_directories(${THREADS_INCLUDE_DIR})
 
 if(cros_compile)
     find_package(PDCurses REQUIRED)
-    set(CURSES_INCLUDE_DIR ${PDCURSES_INCLUDE_DIR})
-    set(CURSES_LIBRARIES ${PDCURSES_LIBRARIES})
-
-    add_executable(${PROJECT_NAME} ${SRC_MAIN} ${SRC_TETRIS})
-    target_link_libraries(${PROJECT_NAME} ${PDCURSES_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 else()
     find_package(Curses REQUIRED)
-
-    include_directories(${CURSES_INCLUDE_DIR})
-
-    add_library(${LIBRARY_TETRIS} SHARED ${SRC_TETRIS})
-
-    add_executable(${PROJECT_NAME} ${SRC_MAIN})
-
-    target_link_libraries(${PROJECT_NAME} ${CURSES_LIBRARIES} ${LIBRARY_TETRIS}
-        ${CMAKE_THREAD_LIBS_INIT})
-
-    install(TARGETS ${LIBRARY_TETRIS} DESTINATION /usr/lib)
-    install(TARGETS ${PROJECT_NAME} DESTINATION /usr/local/bin)
-
-    if(NOT TARGET uninstall)
-        configure_file(
-            "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
-            "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
-            IMMEDIATE @ONLY)
-
-        add_custom_target(uninstall
-            COMMAND ${CMAKE_COMMAND} -P
-            ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
-    endif(NOT TARGET uninstall)
 endif(cros_compile)
+
+include_directories(${CURSES_INCLUDE_DIR})
+
+add_library(${LIBRARY_TETRIS} STATIC ${SRC_TETRIS})
+
+add_executable(${PROJECT_NAME} ${SRC_MAIN})
+
+target_link_libraries(${PROJECT_NAME} ${LIBRARY_TETRIS} ${CURSES_LIBRARIES}
+    ${CMAKE_THREAD_LIBS_INIT})
+
+install(TARGETS ${LIBRARY_TETRIS} DESTINATION /usr/lib)
+install(TARGETS ${PROJECT_NAME} DESTINATION /usr/local/bin)
+
+if(NOT TARGET uninstall)
+    configure_file(
+        "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+        IMMEDIATE @ONLY)
+
+    add_custom_target(uninstall
+        COMMAND ${CMAKE_COMMAND} -P
+        ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
+endif(NOT TARGET uninstall)

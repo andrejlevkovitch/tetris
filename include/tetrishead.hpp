@@ -18,7 +18,6 @@
 #include<fstream>
 #include<chrono>
 #include<deque>
-#include<atomic>
 
 #define MAX_LEN_NAME 10
 
@@ -157,7 +156,6 @@ void move_at(const Koords &);
 void move_add(const Koords &, chtype);
 void init_colors(void);//throws an exception!!!
 int input();
-void endless(const std::atomic<bool> &, std::atomic<int> &, std::atomic<int> &);
 void save_rezult(const Rpair &);
 void read_from_file(std::list<Gamer> &);
 void save_in_file(std::list<Gamer> &);

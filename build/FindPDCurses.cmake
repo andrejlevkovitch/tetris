@@ -1,8 +1,0 @@
-include(FindPackageHandleStandardArgs)
-if(PDCURSES_INCLUDE_DIR AND PDCURSES_LIBRARIES)
-    set(PDCurses_FIND_QUIETLY TRUE)
-endif(PDCURSES_INCLUDE_DIR AND PDCURSES_LIBRARIES)
-set(PDCURSES_INCLUDE_DIR /usr/i686-w64-mingw32/include)
-set(PDCURSES_LIBRARIES /usr/i686-w64-mingw32/lib/libpdcurses.a)
-find_package_handle_standard_args(PDCurses DEFAULT_MSG PDCURSES_LIBRARIES PDCURSES_INCLUDE_DIR)
-mark_as_advanced(PDCURSES_LIBRARIES)

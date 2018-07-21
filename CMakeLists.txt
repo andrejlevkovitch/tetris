@@ -35,9 +35,6 @@ file(GLOB SRC_TETRIS "sources/libtetris/*.cpp")
 
 include_directories(include)
 
-find_package(Threads REQUIRED)
-include_directories(${THREADS_INCLUDE_DIR})
-
 if(cros_compile)
     find_package(PDCurses REQUIRED)
 else()
@@ -50,8 +47,7 @@ add_library(${LIBRARY_TETRIS} STATIC ${SRC_TETRIS})
 
 add_executable(${PROJECT_NAME} ${SRC_MAIN})
 
-target_link_libraries(${PROJECT_NAME} ${LIBRARY_TETRIS} ${CURSES_LIBRARIES}
-    ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(${PROJECT_NAME} ${LIBRARY_TETRIS} ${CURSES_LIBRARIES})
 
 install(TARGETS ${LIBRARY_TETRIS} DESTINATION /usr/lib)
 install(TARGETS ${PROJECT_NAME} DESTINATION /usr/local/bin)
